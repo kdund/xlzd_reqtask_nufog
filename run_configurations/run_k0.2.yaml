@@ -1,0 +1,58 @@
+statistical_model: alea.models.BlueiceExtendedModel
+statistical_model_config: ../likelihoods/xlzd_wimp_search_model_k0.2.yaml
+
+poi: WIMP_rate_multiplier
+
+computation_options:
+
+  sensitivity_short:
+    to_zip: {}
+    to_vary: {
+      livetime: [100,200,500,1000]
+    }
+    in_common:
+      {
+        #detector_performance: "good",
+        #detector_location: "LNGS",
+        poi_expectation: 0.,
+        wimp_mass: 40,
+        hypotheses: ["free", "zero", "true"],
+        output_filename: "toymc_sensi_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+        n_mc: 100,
+        n_batch: 1,
+        compute_confidence_interval: True,
+        asymptotic_dof: 1,
+        toydata_mode: "generate",
+        toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+      }
+  sensitivity:
+    to_zip: {}
+    to_vary: {
+      detector_performance: ["good","bad"],
+      detector_location: ["LNGS","SURF"],
+      generate_args: [{"Pb214_rate_multiplier":1.}],
+    }
+    in_common:
+      {
+        poi_expectation: 0.,
+        wimp_mass: 40,
+        hypotheses: ["free", "zero", "true"],
+        output_filename: "toymc_sensi_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+        n_mc: 100,
+        n_batch: 1,
+        compute_confidence_interval: True,
+        asymptotic_dof: 1,
+        toydata_mode: "generate",
+        toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+      }
+
+slurm_configurations:
+  template_path: null
+  hours: 0.5
+  mem_per_cpu: 1000
+  container: null
+  partition: null
+  qos: debug
+  constraint: cpu
+
+outputfolder: "/global/homes/k/kdund/xlzd/xlzd_reqtask_nufloor/run/run_results/"
