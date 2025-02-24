@@ -1,0 +1,44 @@
+statistical_model: alea.models.BlueiceExtendedModel
+statistical_model_config: ../likelihoods/xlzd_wimp_search_model_LNGS_good_k0.3.yaml
+
+poi: WIMP_rate_multiplier
+
+computation_options:
+
+  sensitivity:
+    to_zip: {}
+    to_vary: {
+      #livetime: [5,10,20,50,75,100,150,200,500,700,1000],
+      livetime: [100,200,500,700,1000],
+      generate_values: [
+        {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1. , "neutron_rate_multiplier":1.},
+        {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1. , "neutron_rate_multiplier":10.},
+        {"Pb214_rate_multiplier":10.,"Kr85_rate_multiplier":10.,"neutron_rate_multiplier":1.}
+      ],
+    }
+    in_common:
+      {
+        #detector_performance: "good",
+        #detector_location: "LNGS",
+        poi_expectation: 0.,
+        wimp_mass: 5000,
+        hypotheses: ["free", "zero", "true"],
+        output_filename: "toymc_sensi_k0d3__LNGS_good_Pb214_{Pb214_rate_multiplier:.2f}_Kr85_{Kr85_rate_multiplier:.2f}_neutron_{neutron_rate_multiplier:.2f}_livetime_{livetime:.0f}_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+        n_mc: 500,
+        n_batch: 5,
+        compute_confidence_interval: True,
+        asymptotic_dof: 1,
+        toydata_mode: "generate",
+        toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+      }
+
+slurm_configurations:
+  template_path: null
+  hours: 2.
+  mem_per_cpu: 1000
+  container: null
+  partition: null
+  qos: regular
+  constraint: cpu
+
+outputfolder: "/global/homes/k/kdund/xlzd/xlzd_reqtask_nufog/run/run_results/"
