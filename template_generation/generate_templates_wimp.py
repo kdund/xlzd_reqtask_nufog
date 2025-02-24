@@ -42,7 +42,7 @@ def generate_wimp_template(fname = "deleteme.h5",
 
     sources = dict()
     source_WIMP = fd.xlzd.XLZDWIMPSource
-    wimp_masses = [40]
+    wimp_masses = [11,40., 5000]
     sources = {k:i(**detector_configuration) for k,i in sources.items()}
     sources_wimp = {"WIMP{:.0f}".format(wimp_mass):source_WIMP(wimp_mass=wimp_mass,**detector_configuration) for wimp_mass in wimp_masses }
     sources.update(**sources_wimp)
@@ -81,8 +81,10 @@ def generate_wimp_template(fname = "deleteme.h5",
 if __name__ == "__main__":
 
     #r0.2 WIMP templates: 
-    generate_wimp_template(detector_performance = "good", N_hist = int(1e8), fname = "../data/pdfs_wimp_60t_r0.2_good.h5")
-    generate_wimp_template(detector_performance = "bad", N_hist = int(1e8), fname = "../data/pdfs_wimp_60t_r0.2_bad.h5")
+    #generate_wimp_template(detector_performance = "good", N_hist = int(1e8), fname = "../data/pdfs_wimp_60t_r0.2_good.h5")
+    #generate_wimp_template(detector_performance = "bad", N_hist = int(1e8), fname = "../data/pdfs_wimp_60t_r0.2_bad.h5")
+    generate_wimp_template(detector_performance = "good", N_hist = int(1e8), fname = "../data/pdfs_wimp_60t_r0.3_good.h5")
+    generate_wimp_template(detector_performance = "bad", N_hist = int(1e8), fname = "../data/pdfs_wimp_60t_r0.3_bad.h5")
 
 
 
