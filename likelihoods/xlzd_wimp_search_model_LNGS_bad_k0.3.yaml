@@ -118,7 +118,7 @@ parameter_definition:
 
 likelihood_config:
   likelihood_weights: [1]
-  template_folder: /global/homes/k/kdund/xlzd/xlzd_reqtask_nufloor/data/ # will try to find the templates in alea
+  template_folder: /home/kmoraa/xlzd_reqtask_nufog/data/ # will try to find the templates in alea
   likelihood_terms:
     # SR0
     - name: sr0
@@ -138,10 +138,8 @@ likelihood_config:
         parameters:
           - wimp_mass
           - WIMP_rate_multiplier
-          - detector_performance
         named_parameters:
           - wimp_mass
-          - detector_performance
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 1.
 
@@ -157,11 +155,6 @@ likelihood_config:
         histname: CEvNS_other_LNGS
         parameters:
           - CEvNS_other_rate_multiplier
-          - detector_location
-          - detector_performance
-        named_parameters: 
-          - detector_location
-          - detector_performance
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 1.
       
@@ -169,11 +162,6 @@ likelihood_config:
         histname: WIMP46
         parameters:
           - neutron_rate_multiplier
-          - detector_location
-          - detector_performance
-        named_parameters: 
-          - detector_location
-          - detector_performance
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 2.1712e-5 #scales rate to 0.1 of CEvNS
       
@@ -183,9 +171,6 @@ likelihood_config:
         histname: SolarER
         parameters:
           - SolarER_rate_multiplier
-          - detector_performance
-        named_parameters: 
-          - detector_performance
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 1.
 
@@ -193,9 +178,6 @@ likelihood_config:
         histname: Xe136
         parameters:
           - Xe136_rate_multiplier
-          - detector_performance
-        named_parameters: 
-          - detector_performance
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 1.
 
@@ -203,9 +185,6 @@ likelihood_config:
         histname: Xe124
         parameters:
           - Xe136_rate_multiplier
-          - detector_performance
-        named_parameters: 
-          - detector_performance
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 1.
 
@@ -213,9 +192,6 @@ likelihood_config:
         histname: Pb214_low_LNGS
         parameters:
           - Pb214_rate_multiplier
-          - detector_performance
-        named_parameters: 
-          - detector_performance
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 1.
 
@@ -223,9 +199,6 @@ likelihood_config:
         histname: Kr85_low_LNGS
         parameters:
           - Kr85_rate_multiplier
-          - detector_performance
-        named_parameters: 
-          - detector_performance
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 1.
 
