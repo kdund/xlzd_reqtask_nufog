@@ -1,0 +1,243 @@
+parameter_definition:
+
+  livetime:
+    nominal_value: 1.
+    ptype: livetime
+    fittable: false
+    description: Livetime of XLZD in multiples of 1 ty
+
+  # signal:
+  WIMP_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 0.001
+
+  wimp_mass:
+    nominal_value: 40
+    fittable: false
+    description: WIMP mass in GeV/c^2
+
+
+  # NR bkg:
+
+  #CEvNS_solar_rate_multiplier:
+  #  nominal_value: 1.0
+  #  ptype: rate
+  #  uncertainty: 0.0464
+  #  relative_uncertainty: true
+  #  fittable: true
+  #  fit_limits:
+  #    - 0
+  #    - null
+  #  fit_guess: 1.0
+
+  CEvNS_other_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    uncertainty: 0.195
+    relative_uncertainty: true
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 1.0
+
+  neutron_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    uncertainty: 0.2
+    relative_uncertainty: true
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 1.0
+
+  # ER bkg: 
+
+  SolarER_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    uncertainty: 0.0464
+    relative_uncertainty: true
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 1.0
+
+  Xe136_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    uncertainty: 0.15
+    relative_uncertainty: true
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 1.0
+
+  Xe124_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    uncertainty: 0.20
+    relative_uncertainty: true
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 1.0
+
+  Pb214_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    uncertainty: 0.167
+    relative_uncertainty: true
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 1.0
+
+  Kr85_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    uncertainty: 0.167
+    relative_uncertainty: true
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 1.0
+
+
+
+likelihood_config:
+  likelihood_weights: [1]
+  template_folder: /global/homes/k/kdund/xlzd/xlzd_reqtask_nufloor/data/ # will try to find the templates in alea
+  likelihood_terms:
+    # SR0
+    - name: sr0
+      default_source_class: alea.template_source.TemplateSource
+      likelihood_type: blueice.likelihood.UnbinnedLogLikelihood
+      #likelihood_type: blueice.likelihood.BinnedLogLikelihood
+      analysis_space:
+        - cs1: np.linspace(5, 100, 101)
+        - log10_cs2: np.linspace(2.8,3.7, 101)
+      in_events_per_bin: true
+      livetime_parameter: livetime
+      slice_args: {}
+      sources:
+      # Signal 
+      - name: WIMP
+        histname: WIMP{wimp_mass:d}
+        parameters:
+          - wimp_mass
+          - WIMP_rate_multiplier
+          - detector_performance
+        named_parameters:
+          - wimp_mass
+          - detector_performance
+        template_filename: pdfs_nufloor_60t_good_r0.3.h5
+        histogram_scale_factor: 1.
+
+      # NR backgrounds 
+      #- name: CEvNS_solar
+      #  histname: CEvNS_solar
+      #  parameters:
+      #    - CEvNS_solar_rate_multiplier
+      #  template_filename: pdfs_40t.ii
+      #  histogram_scale_factor: 1.
+
+      - name: CEvNS_other
+        histname: CEvNS_other_SURF
+        parameters:
+          - CEvNS_other_rate_multiplier
+          - detector_location
+          - detector_performance
+        named_parameters: 
+          - detector_location
+          - detector_performance
+        template_filename: pdfs_nufloor_60t_good_r0.3.h5
+        histogram_scale_factor: 1.
+      
+      - name: neutron
+        histname: WIMP46
+        parameters:
+          - neutron_rate_multiplier
+          - detector_location
+          - detector_performance
+        named_parameters: 
+          - detector_location
+          - detector_performance
+        template_filename: pdfs_nufloor_60t_good_r0.3.h5
+        histogram_scale_factor: 2.1712e-5 #scales rate to 0.1 of CEvNS
+      
+      # ER backgrounds 
+
+      - name: SolarER
+        histname: SolarER
+        parameters:
+          - SolarER_rate_multiplier
+          - detector_performance
+        named_parameters: 
+          - detector_performance
+        template_filename: pdfs_nufloor_60t_good_r0.3.h5
+        histogram_scale_factor: 1.
+
+      - name: Xe136
+        histname: Xe136
+        parameters:
+          - Xe136_rate_multiplier
+          - detector_performance
+        named_parameters: 
+          - detector_performance
+        template_filename: pdfs_nufloor_60t_good_r0.3.h5
+        histogram_scale_factor: 1.
+
+      - name: Xe124
+        histname: Xe124
+        parameters:
+          - Xe136_rate_multiplier
+          - detector_performance
+        named_parameters: 
+          - detector_performance
+        template_filename: pdfs_nufloor_60t_good_r0.3.h5
+        histogram_scale_factor: 1.
+
+      - name: Pb214
+        histname: Pb214_low_LNGS
+        parameters:
+          - Pb214_rate_multiplier
+          - detector_performance
+        named_parameters: 
+          - detector_performance
+        template_filename: pdfs_nufloor_60t_good_r0.3.h5
+        histogram_scale_factor: 1.
+
+      - name: Kr85
+        histname: Kr85_low_LNGS
+        parameters:
+          - Kr85_rate_multiplier
+          - detector_performance
+        named_parameters: 
+          - detector_performance
+        template_filename: pdfs_nufloor_60t_good_r0.3.h5
+        histogram_scale_factor: 1.
+
+
+
+
+# just for illusrative purposes, the default values are shown here.
+# they are not needed in the configuration file but you could
+# overwrite them here.
+fit_strategy:
+  disable_index_fitting: False
+  max_index_fitting_iter: 10
+  minimizer_routine: "migrad"
+  minuit_strategy: 1
+  refit_invalid: True
