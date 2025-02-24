@@ -14,6 +14,9 @@ parameter_definition:
     fit_limits:
       - 0
       - null
+    parameter_interval_bounds: 
+      - 0 
+      - null
     fit_guess: 0.001
 
   wimp_mass:
@@ -118,7 +121,8 @@ parameter_definition:
 
 likelihood_config:
   likelihood_weights: [1]
-  template_folder: /home/kmoraa/xlzd_reqtask_nufog/data/ # will try to find the templates in alea
+  template_folder: /global/homes/k/kdund/xlzd/xlzd_reqtask_nufog/data/ # will try to find the templates in alea
+  #template_folder: /home/kmoraa/xlzd_reqtask_nufog/data/ # will try to find the templates in alea
   likelihood_terms:
     # SR0
     - name: sr0
