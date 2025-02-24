@@ -20,3 +20,5 @@ def convert_file(fname):
 if __name__ == "__main__":
     convert_file("../data/pdfs_CEvNS_disco_60t_r0.2_good.pkl")
     convert_file("../data/pdfs_CEvNS_disco_60t_r0.2_bad.pkl")
+    convert_file("../data/pdfs_nufloor_60t_bad_r0.3.pkl")
+    convert_file("../data/pdfs_nufloor_60t_good_r0.3.pkl")
