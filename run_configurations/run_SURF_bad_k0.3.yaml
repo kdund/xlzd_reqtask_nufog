@@ -32,13 +32,21 @@ computation_options:
         toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
       }
 
+#slurm_configurations:
+#  template_path: null
+#  hours: 2.
+#  mem_per_cpu: 1000
+#  container: null
+#  partition: null
+#  qos: regular
+#  constraint: cpu
 slurm_configurations:
   template_path: null
   hours: 2.
   mem_per_cpu: 1000
   container: null
   partition: null
-  qos: regular
-  constraint: cpu
+  qos: normal
 
-outputfolder: "/global/homes/k/kdund/xlzd/xlzd_reqtask_nufog/run/run_results/"
+  #outputfolder: "/global/homes/k/kdund/xlzd/xlzd_reqtask_nufog/run/run_results/"
+outputfolder: "/home/kmoraa/xlzd_reqtask_nufog/run/run_results"
