@@ -193,14 +193,14 @@ likelihood_config:
         histogram_scale_factor: 1.
 
       - name: Pb214
-        histname: Pb214_low_LNGS
+        histname: Pb214_low_SURF
         parameters:
           - Pb214_rate_multiplier
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
         histogram_scale_factor: 1.
 
       - name: Kr85
-        histname: Kr85_low_LNGS
+        histname: Kr85_low_SURF
         parameters:
           - Kr85_rate_multiplier
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
