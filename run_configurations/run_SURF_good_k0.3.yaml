@@ -23,9 +23,10 @@ computation_options:
         poi_expectation: 0.,
         wimp_mass: 5000,
         hypotheses: ["free", "zero", "true"],
-        output_filename: "toymc_sensi_k0d31_SURF_good_Pb214_{Pb214_rate_multiplier:.2f}_Kr85_{Kr85_rate_multiplier:.2f}_neutron_{neutron_rate_multiplier:.2f}_livetime_{livetime:.0f}_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+        output_filename: "toymc_sensi_k0d32_SURF_good_Pb214_{Pb214_rate_multiplier:.2f}_Kr85_{Kr85_rate_multiplier:.2f}_neutron_{neutron_rate_multiplier:.2f}_livetime_{livetime:.0f}_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
         n_mc: 500,
-        n_batch: 5,
+        #n_batch: 5,
+        n_batch: 20,
         compute_confidence_interval: True,
         asymptotic_dof: 1,
         toydata_mode: "generate",
@@ -42,7 +43,7 @@ computation_options:
 #  constraint: cpu
 slurm_configurations:
   template_path: null
-  hours: 2.
+  hours: 3.5
   mem_per_cpu: 1000
   container: null
   partition: null
