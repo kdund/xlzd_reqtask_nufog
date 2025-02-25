@@ -20,6 +20,11 @@ Group Members:
 Each likelihood, run config and results should be associated with a version name to allow easier organisation, listed below
   * k0.0: A very simplified ER+nu+WIMP likelihood using templates from Rob
   * r0.2: Rob ran discovery significance projections and defined a "good" and "bad" detector state. General detector config found in https://github.com/FlamTeam/flamedisx/blob/RJ-XLZD_simple/flamedisx/xlzd/xlzd.py :  
+  * r0.3 (bugged): Run with incorrect detector geometry
+  * r0.3 : Run with neutrons in "good" config
+  * k0.3: run with WIMP-as-neutron
+  * k0.31: run with incorrect detector geometry
+  * k0.32: run with corrected template from Rob, using WIMP-as-neutron for the "bad" config. 
     * Good: 80V/cm drift, 7.5 keV gas field, 10ms electron lifetime, 0.27 PMT quantum eff. 
     * Bad: 25 V/cm drift field, 6 keV/cm gas field. 
 

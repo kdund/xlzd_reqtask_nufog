@@ -163,11 +163,11 @@ likelihood_config:
         histogram_scale_factor: 1.
       
       - name: neutron
-        histname: neutrons_low_SURF
+        histname: WIMP46
         parameters:
           - neutron_rate_multiplier
         template_filename: pdfs_nufloor_60t_bad_r0.3.h5
-        histogram_scale_factor: 1.
+        histogram_scale_factor: 2.5028e-5 #scaled to give 0.1 times CEvNS
       
       # ER backgrounds 
 
