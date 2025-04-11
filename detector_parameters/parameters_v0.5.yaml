@@ -1,0 +1,90 @@
+parameters:
+  # main detector parameters
+  drift_field:
+    value: 
+      - 30
+      - 100
+      - 300
+    unit: V/cm
+    definition: average drift field in liquid
+  gas_field:
+    unit: kV/cm
+    value: 7.5
+    definition: extraction field in gas
+  electron_livetime:
+    unit: ms
+    value: 10
+    definition: time for an e-fold reduction of the drifting electron cloud
+  PMT_quantum_efficiency:
+    value: 0.31
+    unit: PMT hit / photon
+    definition: probability of an incident photon to cause a PMT hit
+  # fixed detector parameters: 
+  temperature: 
+    value: 174.1
+    unit: K
+    definition: temperature of liquid
+  pressure: 
+    value: 1.79
+    unit: bar
+    definition: pressure of gXe
+  n_pmts: #this one should be tied to a specific Geant4 I think?
+    value: 902
+    unit: number of PMTs
+  p_dpe: 
+    value: 0.2
+    unit: 1
+    definition: probability for a photon to cause a double-photon emission of a photon
+  g1_gas:
+    value: 0.1
+    unit: phd/photon
+    definition: mean S1 per scintillation photon emitted
+  s2_fano: 
+    value: 2
+    unit: Fano factor for super-poissonian fluctuation of S2 size
+  spe_resolution: 
+    value: 0.38
+    unit: phe
+    definition: width of single-photon-electron
+  spe_threshold: 
+    value: 0.375
+    unit: phe
+    definition: threshold to record a single-photoelectron
+  spe_efficiency: 
+    value: 1.
+    unit: probability
+    definition: TODO, NEST string unclear, actual efficiency, can be used in lieu of POD threshold
+background_rates:
+  Pb214:
+    value: 0.1
+    unit: microBq/kg
+    definition: concentration of Rn220 in detector
+  Kr85:
+    value: 0.1
+    unit: ppt
+    definition: concentration of Kr85 in lXe
+  neutron:
+    value: 0.1
+    unit: events/events
+    definition: relative rate of neutrons to CEvNS
+wimp_analysis_parameters:
+  cs1_range:
+    value:
+      - 0
+      - 100
+    unit: phe
+    definition: Lower and upper range of cS1 range in photon-equivalent (LZ scale of S1)
+  cs2_range:
+    value:
+      - 10**2.5
+      - 10**4
+    unit: phe
+    definition: Lower and upper range of cS2 range in photon-equivalent (LZ scale of S2)
+  s2_threshold:
+    value: 198 #why not 200?
+    unit: phe
+    definition: Lower edge/threshold for S2s
+  coincidence_threshold:
+    value: 4
+    unit: PMT hits
+    definition: number of PMTs needed to be hit in coincidence
