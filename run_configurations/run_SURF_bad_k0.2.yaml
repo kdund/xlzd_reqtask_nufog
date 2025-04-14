@@ -1,5 +1,5 @@
 statistical_model: alea.models.BlueiceExtendedModel
-statistical_model_config: ../likelihoods/xlzd_wimp_search_model_SURF_bad_k0.2.yaml
+statistical_model_config: ../likelihoods/xlzd_wimp_search_model_SURF_bad_k0.2.yaml #specify the config
 
 poi: WIMP_rate_multiplier
 
@@ -7,9 +7,9 @@ computation_options:
 
   sensitivity:
     to_zip: {}
-    to_vary: {
+    to_vary: { #these parameters will be variaed in a product-fashion
       livetime: [20,100,200,500,700],
-      generate_values: [{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1. },
+      generate_values: [{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1. }, #true parameters for toyMC
                         {"Pb214_rate_multiplier":10.,"Kr85_rate_multiplier":10.},
                         {"Pb214_rate_multiplier":10.,"Kr85_rate_multiplier":1. },
                         {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":10.}],
@@ -18,15 +18,15 @@ computation_options:
       {
         #detector_performance: "good",
         #detector_location: "LNGS",
-        poi_expectation: 0.,
+        poi_expectation: 0., #expected value for toyMC
         wimp_mass: 40,
-        hypotheses: ["free", "zero", "true"],
-        output_filename: "toymc_sensi_SURF_bad_Pb214_{Pb214_rate_multiplier:.2f}_Kr85_{Kr85_rate_multiplier:.2f}_livetime_{livetime:.0f}_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+        hypotheses: ["free", "zero", "true"], #fir with all parameters free, with signal to 0+ and signal to true value
+        output_filename: "toymc_sensi_SURF_bad_Pb214_{Pb214_rate_multiplier:.2f}_Kr85_{Kr85_rate_multiplier:.2f}_livetime_{livetime:.0f}_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5", #specify toyMC file pattern
         n_mc: 500,
         n_batch: 5,
         compute_confidence_interval: True,
         asymptotic_dof: 1,
-        toydata_mode: "generate",
+        toydata_mode: "generate", #can also store toyMC
         toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
       }
 
