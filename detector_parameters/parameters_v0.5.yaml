@@ -6,6 +6,7 @@ parameters:
       - 100
       - 300
     unit: V/cm
+    format: ".2f"
     definition: average drift field in liquid
   gas_field:
     unit: kV/cm
