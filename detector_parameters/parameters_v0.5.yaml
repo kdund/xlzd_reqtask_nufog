@@ -1,26 +1,36 @@
+# Detector parameters
 parameters:
-  # main detector parameters
+  # Parameters varied for initial studies
   drift_field:
-    value: 
-      - 30
-      - 100
+    value: 80
+    range:
+      - 25
       - 300
     unit: V/cm
-    format: ".2f"
     definition: average drift field in liquid
   gas_field:
-    unit: kV/cm
     value: 7.5
+    range:
+      - 6
+      - 7.5
+    unit: kV/cm
     definition: extraction field in gas
   electron_livetime:
-    unit: ms
     value: 10
+    range:
+      - 5
+      - 50
+    unit: ms
     definition: time for an e-fold reduction of the drifting electron cloud
   PMT_quantum_efficiency:
     value: 0.31
+    range:
+      - 0.31
+      - 0.35
     unit: PMT hit / photon
     definition: probability of an incident photon to cause a PMT hit
-  # fixed detector parameters: 
+
+  # Parameters we probably don't want to vary just yet
   temperature: 
     value: 174.1
     unit: K
@@ -28,13 +38,14 @@ parameters:
   pressure: 
     value: 1.79
     unit: bar
-    definition: pressure of gXe
-  n_pmts: #this one should be tied to a specific Geant4 I think?
+    definition: pressure of GXe
+  n_pmts:
     value: 902
-    unit: number of PMTs
+    unit: number
+    definition: number of PMTs
   p_dpe: 
     value: 0.2
-    unit: 1
+    unit: probability
     definition: probability for a photon to cause a double-photon emission of a photon
   g1_gas:
     value: 0.1
@@ -42,7 +53,8 @@ parameters:
     definition: mean S1 per scintillation photon emitted
   s2_fano: 
     value: 2
-    unit: Fano factor for super-poissonian fluctuation of S2 size
+    unit: 1
+    definition: Fano factor for super-Poissonian fluctuation of S2 size
   spe_resolution: 
     value: 0.38
     unit: phe
@@ -55,6 +67,8 @@ parameters:
     value: 1.
     unit: probability
     definition: TODO, NEST string unclear, actual efficiency, can be used in lieu of POD threshold
+
+# Backgrounds
 background_rates:
   Pb214:
     value: 0.1
@@ -63,26 +77,28 @@ background_rates:
   Kr85:
     value: 0.1
     unit: ppt
-    definition: concentration of Kr85 in lXe
+    definition: concentration of Kr85 in LXe
   neutron:
     value: 0.1
     unit: events/events
     definition: relative rate of neutrons to CEvNS
+
+# Analysis parameters
 wimp_analysis_parameters:
   cs1_range:
     value:
       - 0
       - 100
     unit: phe
-    definition: Lower and upper range of cS1 range in photon-equivalent (LZ scale of S1)
+    definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
   cs2_range:
     value:
-      - 10**2.5
-      - 10**4
-    unit: phe
-    definition: Lower and upper range of cS2 range in photon-equivalent (LZ scale of S2)
+      - 2.5
+      - 4
+    unit: log10(cS2[phe])
+    definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
   s2_threshold:
-    value: 198 #why not 200?
+    value: 198
     unit: phe
     definition: Lower edge/threshold for S2s
   coincidence_threshold:
