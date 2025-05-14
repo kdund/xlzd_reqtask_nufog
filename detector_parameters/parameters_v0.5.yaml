@@ -2,24 +2,24 @@
 parameters:
   # Parameters varied for initial studies
   drift_field:
-    value: 80
+    value: 80.
     range:
-      - 25
-      - 300
+      - 25.
+      - 300.
     unit: V/cm
     definition: average drift field in liquid
   gas_field:
     value: 7.5
     range:
-      - 6
+      - 6.
       - 7.5
     unit: kV/cm
     definition: extraction field in gas
   electron_livetime:
-    value: 10
+    value: 10.
     range:
-      - 5
-      - 50
+      - 5.
+      - 50.
     unit: ms
     definition: time for an e-fold reduction of the drifting electron cloud
   PMT_quantum_efficiency:
@@ -52,7 +52,7 @@ parameters:
     unit: phd/photon
     definition: mean S1 per scintillation photon emitted
   s2_fano: 
-    value: 2
+    value: 2.
     unit: 1
     definition: Fano factor for super-Poissonian fluctuation of S2 size
   spe_resolution: 
@@ -87,18 +87,18 @@ background_rates:
 wimp_analysis_parameters:
   cs1_range:
     value:
-      - 0
-      - 100
+      - 0.
+      - 100.
     unit: phe
     definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
   cs2_range:
     value:
       - 2.5
-      - 4
+      - 4.
     unit: log10(cS2[phe])
     definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
   s2_threshold:
-    value: 198
+    value: 198.
     unit: phe
     definition: Lower edge/threshold for S2s
   coincidence_threshold:
