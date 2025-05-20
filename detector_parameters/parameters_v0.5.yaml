@@ -5,6 +5,7 @@ parameters:
     value: 80.
     range:
       - 25.
+      - 80.
       - 300.
     unit: V/cm
     definition: average drift field in liquid
@@ -19,6 +20,7 @@ parameters:
     value: 10.
     range:
       - 5.
+      - 10.
       - 50.
     unit: ms
     definition: time for an e-fold reduction of the drifting electron cloud
@@ -67,6 +69,9 @@ parameters:
     value: 1.
     unit: probability
     definition: TODO, NEST string unclear, actual efficiency, can be used in lieu of POD threshold
+  lce_configuration:
+    value: 60t
+    description: LCE parameterization from https://github.com/FlamTeam/flamedisx/blob/RJ-XLZD_simple/flamedisx/xlzd/xlzd.py
 
 # Backgrounds
 background_rates:
@@ -91,12 +96,20 @@ wimp_analysis_parameters:
       - 100.
     unit: phe
     definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
+  cs1_bins:
+    value: 101
+    unit: number of bin edges
+    definition: number of equidistant bin edges in cs1
   cs2_range:
     value:
       - 2.5
-      - 4.
+      - 4.5
     unit: log10(cS2[phe])
     definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
+  cs2_bins:
+    value: 101
+    unit: number of bin edges
+    definition: number of equidistant bin edges in cs2
   s2_threshold:
     value: 198.
     unit: phe
@@ -105,3 +118,8 @@ wimp_analysis_parameters:
     value: 4
     unit: PMT hits
     definition: number of PMTs needed to be hit in coincidence
+  wimp_mass: 
+    value: 
+      - 5000.
+    unit: GeV/c2
+    definition: WIMP mass tested

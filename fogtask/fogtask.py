@@ -2,6 +2,9 @@ import numpy as np
 import scipy.stats as sps
 import yaml
 from importlib_resources import files
+from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNROtherLNGSSource, XLZDWIMPSource
+from tqdm import tqdm
+from multihist import Histdd
 
 default_version = "v0.5"
 
@@ -29,16 +32,91 @@ def get_detector_parameters(version=default_version):
 
 def get_template_parameters(version=default_version):
     parameters = get_parameters(version)["parameters"]
+    parameters.update(get_parameters(version)["background_rates"])
     ret_fix = dict()
     ret_iter = dict()
     nominal_parameters = dict()
     template_format_string = ""
     for k,i in sorted(parameters.items()):
-        if type(i["value"]) == list:
-            ret_iter[k] = i["value"]
-            nominal_parameters[k] = i.get("nominal_value", i["value"][0])
+        if "range" in i.keys():
+            ret_iter[k] = i["range"]
+            nominal_parameters[k] = i.get("nominal_value", i["value"])
             template_format_string += k+"_{"+k+":"+i.get("format",".2f")+"}"
         else:
             ret_fix[k] = i["value"]
             nominal_parameters[k] = i["value"]
-    return ret_fix, ret_iter, nominal_parameters, template_format_string
+    return ret_fix, ret_iter, nominal_parameters, template_format_string 
+
+def generate_templates(parameters, analysis_parameters, n_samples = int(1e7)):
+    """
+    For a fixed set of parameters, generate all templates used in the XLZD flamefit template generation
+    """
+    common_pass_parameters = dict(
+    cS1_min = analysis_parameters['cs1_range']['value'][0],
+    cS1_max = analysis_parameters['cs1_range']['value'][-1],
+    log10_cS2_min = analysis_parameters['cs2_range']['value'][0],
+    log10_cS2_max = analysis_parameters['cs2_range']['value'][-1],
+    s2_thr = analysis_parameters['s2_threshold']['value'],
+    coin_level = analysis_parameters['coincidence_threshold']['value'],
+    drift_field_V_cm = parameters['drift_field'],
+    gas_field_kV_cm = parameters['gas_field'],
+    elife_ns = parameters['electron_livetime'] * 1e6,
+    g1 = parameters['PMT_quantum_efficiency'],
+    temperature_K = parameters['temperature'],
+    pressure_bar = parameters['pressure'],
+    num_pmts = parameters['n_pmts'],
+    double_pe_fraction = parameters['p_dpe'],
+    g1_gas = parameters['g1_gas'],
+    s2Fano = parameters['s2_fano'],
+    spe_res = parameters['spe_resolution'],
+    spe_thr = parameters['spe_threshold'],
+    spe_eff = parameters['spe_efficiency'],
+    configuration = parameters['lce_configuration'],
+    )
+
+    fd_sources = dict()
+    fd_sources["SolarER"] = XLZDvERSource(                                         **common_pass_parameters)
+    fd_sources["Pb214"]   = XLZDPb214Source(activity_mBq_kg = parameters["Pb214"], **common_pass_parameters)
+    fd_sources["Kr85"]    = XLZDKr85Source(activity_ppt = parameters["Kr85"],      **common_pass_parameters)
+    fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
+    fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
+    fd_sources["CEvNS_other_LNGS"] =XLZDvNROtherLNGSSource(                        **common_pass_parameters)
+    fd_sources["neutrons"]= XLZDWIMPSource(wimp_mass = 46,                         **common_pass_parameters)
+
+    wimp_masses =  analysis_parameters["wimp_mass"]["value"]
+    if type(wimp_masses) != list: 
+        wimp_masses = [wimp_masses]
+    for wimp_mass in wimp_masses:
+        fd_sources["WIMP_{:.1f}".format(wimp_mass)]= XLZDWIMPSource(wimp_mass = wimp_mass, **common_pass_parameters)
+
+    cs1_bins = np.linspace(analysis_parameters['cs1_range']['value'][0], 
+                           analysis_parameters['cs1_range']['value'][-1], 
+                           analysis_parameters["cs1_bins"]["value"])
+
+    log10cs2_bins = np.linspace(analysis_parameters['cs2_range']['value'][0], 
+                                analysis_parameters['cs2_range']['value'][-1], 
+                                analysis_parameters["cs2_bins"]["value"])
+    hist_args = dict(
+            bins = (cs1_bins, log10cs2_bins),
+            axis_names = ['cS1', 'log10_cS2'])
+
+    ret = dict()
+
+    for k,source in tqdm(fd_sources.items()):
+        hist = Histdd(**hist_args)
+        data = source.simulate(n_samples)
+        hist.add(data['cs1'], np.log10(data['cs2']))
+        mu = source.estimate_mu(n_trials = n_samples)
+        hist.histogram = mu * (hist.histogram / hist.n )
+        ret[k] = hist
+
+    #different normalisation steps: 
+    ret["neutrons"] = ret["neutrons"] / ret["neutrons"].n
+
+
+
+
+
+    return ret
+
+
