@@ -2,6 +2,8 @@ import numpy as np
 import scipy.stats as sps
 import yaml
 from importlib_resources import files
+import inference_interface as ii
+import pickle as pkl
 from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNROtherLNGSSource, XLZDWIMPSource
 from tqdm import tqdm
 from multihist import Histdd
@@ -47,9 +49,29 @@ def get_template_parameters(version=default_version):
             nominal_parameters[k] = i["value"]
     return ret_fix, ret_iter, nominal_parameters, template_format_string 
 
-def generate_templates(parameters, analysis_parameters, n_samples = int(1e7)):
+def save_dict_to_pickle(ret, file_name, signal_pattern = "WIMP"):
+    pdfs = [dict(), dict()]
+    for k,h in ret.items():
+        if signal_pattern in k:
+            pdfs[1][k] = h
+        else:
+            pdfs[0][k] = h
+    pkl.dump(pdfs, open(file_name, "wb"))
+
+def save_dict_to_ii(ret, file_name):
+    histogram_names = sorted(ret.keys())
+    ii.multihist_to_template(
+        [ret[k] for k in histogram_names], 
+        file_name, 
+        histogram_names = histogram_names, 
+        )
+
+
+
+def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7), file_name = None):
     """
-    For a fixed set of parameters, generate all templates used in the XLZD flamefit template generation
+    For a fixed set of parameters, generate all templates used in the XLZD flamefit template generation. If file_name is
+    not None, store the templates both as pickle and inference_interface files
     """
     common_pass_parameters = dict(
     cS1_min = analysis_parameters['cs1_range']['value'][0],
@@ -113,10 +135,17 @@ def generate_templates(parameters, analysis_parameters, n_samples = int(1e7)):
     #different normalisation steps: 
     ret["neutrons"] = ret["neutrons"] / ret["neutrons"].n
 
+    if file_name is not None:
+        fname = file_name.format(**parameters)
 
+        save_dict_to_pickle(ret, fname+".pkl","WIMP")
 
+        save_dict_to_ii(ret, fname+".ii.h5")
 
 
     return ret
+
+
+
 
 
