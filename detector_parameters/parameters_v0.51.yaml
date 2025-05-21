@@ -1,0 +1,117 @@
+# Detector parameters
+parameters:
+  # Parameters varied for initial studies
+  drift_field:
+    value: 80.
+    range:
+      - 80.
+      - 300.
+    unit: V/cm
+    definition: average drift field in liquid
+  gas_field:
+    value: 7.5
+    unit: kV/cm
+    definition: extraction field in gas
+  electron_livetime:
+    value: 10.
+    range:
+      - 10.
+      - 50.
+    unit: ms
+    definition: time for an e-fold reduction of the drifting electron cloud
+  PMT_quantum_efficiency:
+    value: 0.31
+    unit: PMT hit / photon
+    definition: probability of an incident photon to cause a PMT hit
+
+  # Parameters we probably don't want to vary just yet
+  temperature: 
+    value: 174.1
+    unit: K
+    definition: temperature of liquid
+  pressure: 
+    value: 1.79
+    unit: bar
+    definition: pressure of GXe
+  n_pmts:
+    value: 902
+    unit: number
+    definition: number of PMTs
+  p_dpe: 
+    value: 0.2
+    unit: probability
+    definition: probability for a photon to cause a double-photon emission of a photon
+  g1_gas:
+    value: 0.1
+    unit: phd/photon
+    definition: mean S1 per scintillation photon emitted
+  s2_fano: 
+    value: 2.
+    unit: 1
+    definition: Fano factor for super-Poissonian fluctuation of S2 size
+  spe_resolution: 
+    value: 0.38
+    unit: phe
+    definition: width of single-photon-electron
+  spe_threshold: 
+    value: 0.375
+    unit: phe
+    definition: threshold to record a single-photoelectron
+  spe_efficiency: 
+    value: 1.
+    unit: probability
+    definition: TODO, NEST string unclear, actual efficiency, can be used in lieu of POD threshold
+  lce_configuration:
+    value: 60t
+    description: LCE parameterization from https://github.com/FlamTeam/flamedisx/blob/RJ-XLZD_simple/flamedisx/xlzd/xlzd.py
+
+# Backgrounds
+background_rates:
+  Pb214:
+    value: 0.1
+    unit: microBq/kg
+    definition: concentration of Rn220 in detector
+  Kr85:
+    value: 0.1
+    unit: ppt
+    definition: concentration of Kr85 in LXe
+  neutron:
+    value: 0.1
+    unit: events/events
+    definition: relative rate of neutrons to CEvNS
+
+# Analysis parameters
+wimp_analysis_parameters:
+  cs1_range:
+    value:
+      - 0.
+      - 100.
+    unit: phe
+    definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
+  cs1_bins:
+    value: 101
+    unit: number of bin edges
+    definition: number of equidistant bin edges in cs1
+  cs2_range:
+    value:
+      - 2.5
+      - 4.5
+    unit: log10(cS2[phe])
+    definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
+  cs2_bins:
+    value: 101
+    unit: number of bin edges
+    definition: number of equidistant bin edges in cs2
+  s2_threshold:
+    value: 198.
+    unit: phe
+    definition: Lower edge/threshold for S2s
+  coincidence_threshold:
+    value: 4
+    unit: PMT hits
+    definition: number of PMTs needed to be hit in coincidence
+  wimp_mass: 
+    value: 
+      - 5000.
+    unit: GeV/c2
+    definition: WIMP mass tested
