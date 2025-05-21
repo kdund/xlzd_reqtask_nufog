@@ -1,1 +1,4 @@
 **/*.DS_Store
+run/
+fogtask.egg-info/
+fogtask/__pycache__/

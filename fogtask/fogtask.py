@@ -7,6 +7,8 @@ import pickle as pkl
 from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNROtherLNGSSource, XLZDWIMPSource
 from tqdm import tqdm
 from multihist import Histdd
+from itertools import product as iterproduct
+from copy import deepcopy
 
 default_version = "v0.5"
 
@@ -144,6 +146,36 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
 
 
     return ret
+
+def generate_all_wimp_templates(
+        version = default_version,
+        n_samples = int(1e7),
+        file_name_pattern = "deleteme_{parameter_string:s}"
+        ):
+
+    all_parameters = get_parameters(version=version)
+    analysis_parameters = all_parameters["wimp_analysis_parameters"]
+
+    ret_fix, ret_iter, nominal_parameters, template_format_string = get_template_parameters(version=version)
+
+    parameters = deepcopy(nominal_parameters)
+
+    for pars in product_dict(**ret_iter):
+
+        parameters.update(pars)
+        parameter_string = template_format_string.format(**parameters)
+        file_name = file_name_pattern.format(parameter_string=parameter_string)
+
+        generate_template_set(parameters=parameters, 
+                              analysis_parameters = analysis_parameters, 
+                              n_samples = n_samples,
+                              file_name = file_name)
+
+
+
+
+
+
 
 
 
