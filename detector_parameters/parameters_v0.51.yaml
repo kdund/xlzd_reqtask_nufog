@@ -3,9 +3,6 @@ parameters:
   # Parameters varied for initial studies
   drift_field:
     value: 80.
-    range:
-      - 80.
-      - 300.
     unit: V/cm
     definition: average drift field in liquid
   gas_field:
@@ -14,9 +11,6 @@ parameters:
     definition: extraction field in gas
   electron_livetime:
     value: 10.
-    range:
-      - 10.
-      - 50.
     unit: ms
     definition: time for an e-fold reduction of the drifting electron cloud
   PMT_quantum_efficiency:

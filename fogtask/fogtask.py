@@ -150,7 +150,7 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
 def generate_all_wimp_templates(
         version = default_version,
         n_samples = int(1e7),
-        file_name_pattern = "deleteme_{parameter_string:s}"
+        file_name_pattern = "deleteme_{version:s}_{parameter_string:s}"
         ):
 
     all_parameters = get_parameters(version=version)
@@ -164,7 +164,7 @@ def generate_all_wimp_templates(
 
         parameters.update(pars)
         parameter_string = template_format_string.format(**parameters)
-        file_name = file_name_pattern.format(parameter_string=parameter_string)
+        file_name = file_name_pattern.format(parameter_string=parameter_string, version=version)
 
         generate_template_set(parameters=parameters, 
                               analysis_parameters = analysis_parameters, 
