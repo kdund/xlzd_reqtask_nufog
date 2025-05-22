@@ -58,6 +58,10 @@ parameters:
   lce_configuration:
     value: 60t
     description: LCE parameterization from https://github.com/FlamTeam/flamedisx/blob/RJ-XLZD_simple/flamedisx/xlzd/xlzd.py
+  detector: 
+    value: xlzd
+    unit: string
+    description: asked for in https://github.com/FlamTeam/flamedisx/blob/88a5fb9f3813d3c3eb25c70ad3868f606d2e514f/flamedisx/xlzd/xlzd.py#L182-- WIMP calculation asks for it? 
 
 # Backgrounds
 background_rates:
@@ -106,6 +110,54 @@ wimp_analysis_parameters:
     definition: number of PMTs needed to be hit in coincidence
   wimp_mass: 
     value: 
-      - 5000.
+      - 9.00
+      - 11.00
+      - 13.00
+      - 16.00
+      - 17.00
+      - 19.00
+      - 21.00
+      - 23.00
+      - 26.00
+      - 29.00
+      - 32.00
+      - 36.00
+      - 40.00
+      - 43.00
+      - 46.00
+      - 65.00
+      - 91.00
+      - 129.00
+      - 182.00
+      - 256.00
     unit: GeV/c2
     definition: WIMP mass tested
+
+
+      #Current possible WIMP masses (we use a cached file rather than wimprates)
+      #- 9.00
+      #- 11.00
+      #- 13.00
+      #- 16.00
+      #- 17.00
+      #- 19.00
+      #- 21.00
+      #- 23.00
+      #- 26.00
+      #- 29.00
+      #- 32.00
+      #- 36.00
+      #- 40.00
+      #- 43.00
+      #- 46.00
+      #- 65.00
+      #- 91.00
+      #- 129.00
+      #- 182.00
+      #- 256.00
+      #- 361.00
+      #- 508.00
+      #- 1008.00
+      #- 2000.00
+      #- 5000.00
+      #- 10000.00
