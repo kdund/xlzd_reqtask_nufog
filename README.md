@@ -22,4 +22,6 @@ Each likelihood, run config and results should be associated with a version name
   * r0.2: Rob ran discovery significance projections and defined a "good" and "bad" detector state. General detector config found in https://github.com/FlamTeam/flamedisx/blob/RJ-XLZD_simple/flamedisx/xlzd/xlzd.py :  
     * Good: 80V/cm drift, 7.5 keV gas field, 10ms electron lifetime, 0.27 PMT quantum eff. 
     * Bad: 25 V/cm drift field, 6 keV/cm gas field. 
+  * 0.5: first unified run+template generation
+  * 0.51: parameters for example XLZD plot
 
