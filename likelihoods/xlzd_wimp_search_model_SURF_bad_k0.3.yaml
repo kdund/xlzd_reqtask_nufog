@@ -1,17 +1,21 @@
+# alea configs have two main parts-- 
+# parameter_definition where parameters are defined including 
+# definition, nominal value, fit bounds, constraint terms. 
+# the second part defines one or more likelihood terms with templates
 parameter_definition:
 
   livetime:
     nominal_value: 1.
-    ptype: livetime
-    fittable: false
+    ptype: livetime #this parameter can be used as the lifetime-parameter of a likelihood term
+    fittable: false #fixed in fitting
     description: Livetime of XLZD in multiples of 1 ty
 
   # signal:
   WIMP_rate_multiplier:
     nominal_value: 1.0
-    ptype: rate
+    ptype: rate #this parameter will scale  a paramter up and down
     fittable: true
-    fit_limits:
+    fit_limits: #constrained positive (Cowan paper etc. equivalent)
       - 0
       - null
     fit_guess: 0.001
@@ -38,8 +42,8 @@ parameter_definition:
   CEvNS_other_rate_multiplier:
     nominal_value: 1.0
     ptype: rate
-    uncertainty: 0.195
-    relative_uncertainty: true
+    uncertainty: 0.195 #uncertainty/constraint
+    relative_uncertainty: true #in this case, it is relative but when the nominal is 0 you need absolute uncert
     fittable: true
     fit_limits:
       - 0
@@ -116,22 +120,23 @@ parameter_definition:
 
 
 
+#The likelihood terms are defined: 
 likelihood_config:
-  likelihood_weights: [1]
+  likelihood_weights: [1] #it is possible to assign likelihood weights /(not commonly used but I have an asimov idea)
   template_folder: /home/kmoraa/xlzd_reqtask_nufog/data/ # will try to find the templates in alea
   likelihood_terms:
-    # SR0
+    # First science run
     - name: sr0
-      default_source_class: alea.template_source.TemplateSource
-      likelihood_type: blueice.likelihood.UnbinnedLogLikelihood
+      default_source_class: alea.template_source.TemplateSource #standard template source taking in inference_interface files
+      likelihood_type: blueice.likelihood.UnbinnedLogLikelihood #could choose binwise here
       #likelihood_type: blueice.likelihood.BinnedLogLikelihood
-      analysis_space:
+      analysis_space: #dimensions in which the analysis will proceed (all templates to have this binning)
         - cs1: np.linspace(5, 100, 101)
         - log10_cs2: np.linspace(2.8,3.7, 101)
       in_events_per_bin: true
       livetime_parameter: livetime
       slice_args: {}
-      sources:
+      sources: #list each template included, and which parameter each depends on (makes it efficient to cache)
       # Signal 
       - name: WIMP
         histname: WIMP{wimp_mass:d}
@@ -140,7 +145,7 @@ likelihood_config:
           - WIMP_rate_multiplier
         named_parameters:
           - wimp_mass
-        template_filename: pdfs_nufloor_60t_bad_r0.3.h5
+        template_filename: pdfs_nufloor_60t_bad_r0.3.h5 #template filename (at the moment, bit tricky to change strings here-- should change)
         histogram_scale_factor: 1.
 
       # NR backgrounds 
