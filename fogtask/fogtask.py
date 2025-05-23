@@ -4,7 +4,7 @@ import yaml
 from importlib_resources import files
 import inference_interface as ii
 import pickle as pkl
-from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNROtherLNGSSource, XLZDWIMPSource
+from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNROtherLNGSSource, XLZDWIMPSource, XLZDNeutronSource
 from tqdm import tqdm
 from multihist import Histdd
 from itertools import product as iterproduct
@@ -69,8 +69,7 @@ def save_dict_to_ii(ret, file_name):
         )
 
 
-
-def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7), file_name = None):
+def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7), file_name = None, use_radius = False):
     """
     For a fixed set of parameters, generate all templates used in the XLZD flamefit template generation. If file_name is
     not None, store the templates both as pickle and inference_interface files
@@ -105,7 +104,7 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
     fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
     fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
     fd_sources["CEvNS_other_LNGS"] =XLZDvNROtherLNGSSource(                        **common_pass_parameters)
-    fd_sources["neutrons"]= XLZDWIMPSource(wimp_mass = 46,                         **common_pass_parameters)
+    fd_sources["neutrons"]= XLZDNeutronSource(                                     **common_pass_parameters)
 
     wimp_masses =  analysis_parameters["wimp_mass"]["value"]
     if type(wimp_masses) != list: 
@@ -113,44 +112,65 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
     for wimp_mass in wimp_masses:
         fd_sources["WIMP_{:.1f}".format(wimp_mass)]= XLZDWIMPSource(wimp_mass = wimp_mass, **common_pass_parameters)
 
-    cs1_bins = np.linspace(analysis_parameters['cs1_range']['value'][0], 
-                           analysis_parameters['cs1_range']['value'][-1], 
+    cs1_bins = np.linspace(analysis_parameters['cs1_range']['value'][0],
+                           analysis_parameters['cs1_range']['value'][-1],
                            analysis_parameters["cs1_bins"]["value"])
-
-    log10cs2_bins = np.linspace(analysis_parameters['cs2_range']['value'][0], 
-                                analysis_parameters['cs2_range']['value'][-1], 
+    log10cs2_bins = np.linspace(analysis_parameters['cs2_range']['value'][0],
+                                analysis_parameters['cs2_range']['value'][-1],
                                 analysis_parameters["cs2_bins"]["value"])
-    hist_args = dict(
-            bins = (cs1_bins, log10cs2_bins),
-            axis_names = ['cS1', 'log10_cS2'])
+    rsq_bins = np.linspace(analysis_parameters['rsq_range']['value'][0],
+                           analysis_parameters['rsq_range']['value'][-1],
+                           analysis_parameters["rsq_bins"]["value"])
 
-    ret = dict()
+    if use_radius:
+        hist_args = dict(
+                bins = (cs1_bins, log10cs2_bins, rsq_bins),
+                axis_names = ['cS1', 'log10_cS2', 'rsq'])
+    else:
+        hist_args = dict(
+                bins = (cs1_bins, log10cs2_bins),
+                axis_names = ['cS1', 'log10_cS2'])
 
-    for k,source in tqdm(fd_sources.items()):
+    mus = dict()
+    templates = dict()
+    for k, source in tqdm(fd_sources.items()):
         hist = Histdd(**hist_args)
-        data = source.simulate(n_samples)
-        hist.add(data['cs1'], np.log10(data['cs2']))
-        mu = source.estimate_mu(n_trials = n_samples)
-        hist.histogram = mu * (hist.histogram / hist.n )
-        ret[k] = hist
 
-    #different normalisation steps: 
-    ret["neutrons"] = ret["neutrons"] / ret["neutrons"].n
+        data = source.simulate(n_samples)
+        cS1 = data['cs1'].values
+        log10_cS2 = np.log10(data['cs2'].values)
+        rsq = (data['r'].values)**2
+
+        if use_radius:
+            hist.add(cS1, log10_cS2, rsq)
+        else:
+            hist.add(cS1, log10_cS2)
+
+        mus[k] = source.estimate_mu(n_trials = n_samples)
+        hist.histogram = mus[k] * (hist.histogram / hist.n)
+
+        templates[k] = hist
+
+    # Different normalisation procedure
+    templates['neutrons'] = templates['neutrons'] / templates['neutrons'].n * mus['CEvNS_other_LNGS'] * parameters['neutron']
+
+    for sname, template in templates.items():
+        print(f'{sname}: {template.n}')
 
     if file_name is not None:
         fname = file_name.format(**parameters)
 
-        save_dict_to_pickle(ret, fname+".pkl","WIMP")
+        save_dict_to_pickle(templates, fname+".pkl", "WIMP")
+        save_dict_to_ii(templates, fname+".ii.h5")
 
-        save_dict_to_ii(ret, fname+".ii.h5")
-
-
-    return ret
+    return templates
 
 def generate_all_wimp_templates(
         version = default_version,
         n_samples = int(1e7),
-        file_name_pattern = "deleteme_{parameter_string:s}"
+        file_name_pattern = "{parameter_string:s}",
+        nominal_only = True,
+        use_radius = False,
         ):
 
     all_parameters = get_parameters(version=version)
@@ -160,24 +180,23 @@ def generate_all_wimp_templates(
 
     parameters = deepcopy(nominal_parameters)
 
-    for pars in product_dict(**ret_iter):
-
-        parameters.update(pars)
+    if nominal_only:
         parameter_string = template_format_string.format(**parameters)
         file_name = file_name_pattern.format(parameter_string=parameter_string)
 
-        generate_template_set(parameters=parameters, 
-                              analysis_parameters = analysis_parameters, 
+        generate_template_set(parameters=parameters,
+                              analysis_parameters = analysis_parameters,
                               n_samples = n_samples,
-                              file_name = file_name)
+                              file_name = file_name,
+                              use_radius = use_radius)
+    else:
+        for pars in product_dict(**ret_iter):
+            parameters.update(pars)
+            parameter_string = template_format_string.format(**parameters)
+            file_name = file_name_pattern.format(parameter_string=parameter_string)
 
-
-
-
-
-
-
-
-
-
-
+            generate_template_set(parameters=parameters,
+                                  analysis_parameters = analysis_parameters,
+                                  n_samples = n_samples,
+                                  file_name = file_name,
+                                  use_radius = use_radius)

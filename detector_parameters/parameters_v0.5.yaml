@@ -103,13 +103,23 @@ wimp_analysis_parameters:
   cs2_range:
     value:
       - 2.5
-      - 4.5
+      - 4.
     unit: log10(cS2[phe])
     definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
   cs2_bins:
     value: 101
     unit: number of bin edges
     definition: number of equidistant bin edges in cs2
+  rsq_range:
+    value:
+      - 0.
+      - 21542.900625
+    unit: cm^2
+    definition: Lower and upper range of r^2. Maximum value of r is 146.775 cm. See https://github.com/FlamTeam/flamedisx/blob/RJ-XLZD_simple/flamedisx/nest/config/xlzd.ini
+  rsq_bins:
+    value: 51
+    unit: number of bin edges
+    definition: number of equidistant bin edges in r^2
   s2_threshold:
     value: 198.
     unit: phe
