@@ -4,7 +4,7 @@ import yaml
 from importlib_resources import files
 import inference_interface as ii
 import pickle as pkl
-from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNROtherLNGSSource, XLZDWIMPSource, XLZDNeutronSource
+from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNRSolarSource, XLZDvNROtherLNGSSource, XLZDWIMPSource, XLZDNeutronSource
 from tqdm import tqdm
 from multihist import Histdd
 from itertools import product as iterproduct
@@ -103,6 +103,7 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
     fd_sources["Kr85"]    = XLZDKr85Source(activity_ppt = parameters["Kr85"],      **common_pass_parameters)
     fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
     fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
+    fd_sources["CEvNS_solar"] = XLZDvNRSolarSource(                                **common_pass_parameters)
     fd_sources["CEvNS_other_LNGS"] =XLZDvNROtherLNGSSource(                        **common_pass_parameters)
     fd_sources["neutrons"]= XLZDNeutronSource(                                     **common_pass_parameters)
 
