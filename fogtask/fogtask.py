@@ -183,7 +183,7 @@ def generate_all_wimp_templates(
 
     if nominal_only:
         parameter_string = template_format_string.format(**parameters)
-        file_name = file_name_pattern.format(parameter_string=parameter_string)
+        file_name = file_name_pattern.format(version=version,parameter_string=parameter_string)
 
         generate_template_set(parameters=parameters,
                               analysis_parameters = analysis_parameters,
@@ -194,7 +194,7 @@ def generate_all_wimp_templates(
         for pars in product_dict(**ret_iter):
             parameters.update(pars)
             parameter_string = template_format_string.format(**parameters)
-            file_name = file_name_pattern.format(parameter_string=parameter_string)
+            file_name = file_name_pattern.format(version=version,parameter_string=parameter_string)
 
             generate_template_set(parameters=parameters,
                                   analysis_parameters = analysis_parameters,
