@@ -136,6 +136,7 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
 
     #different normalisation steps: 
     ret["neutrons"] = ret["neutrons"] / ret["neutrons"].n
+    ret["neutrons"] = ret["neutrons"] * parameters["neutron"] * ret["CEvNS_other_LNGS"].n
 
     if file_name is not None:
         fname = file_name.format(**parameters)
@@ -171,13 +172,8 @@ def generate_all_wimp_templates(
                               n_samples = n_samples,
                               file_name = file_name)
 
-
-
-
-
-
-
-
-
-
-
+def structured_array_to_dict(arr):
+    ret = dict()
+    for n in arr.dtype.names:
+        ret[n] = float(arr[n][0])
+    return ret
