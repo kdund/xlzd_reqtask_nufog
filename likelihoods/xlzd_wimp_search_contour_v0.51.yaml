@@ -66,6 +66,17 @@ parameter_definition:
   #    - null
   #  fit_guess: 1.0
 
+  neutron_rate_multiplier:
+    nominal_value: 1.0
+    ptype: rate
+    uncertainty: 0.2
+    relative_uncertainty: true
+    fittable: true
+    fit_limits:
+      - 0
+      - null
+    fit_guess: 1.0
+
   CEvNS_other_rate_multiplier:
     nominal_value: 1.0
     ptype: rate
@@ -163,6 +174,14 @@ likelihood_config:
         template_filename: templates_v0.51_.ii.h5
         histogram_scale_factor: 1.
         normalise_template: true
+
+      - name: neutron
+        histname: neutrons
+        parameters:
+          - neutron_rate_multiplier
+        template_filename: templates_v0.51_.ii.h5
+        histogram_scale_factor: 1.
+        normalise_template: false
 
       # NR backgrounds 
       #- name: CEvNS_solar
