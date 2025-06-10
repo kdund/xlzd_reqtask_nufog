@@ -76,7 +76,7 @@ parameters:
 # Backgrounds
 background_rates:
   Pb214:
-    value: 0.0079
+    value: 0.1
     unit: microBq/kg
     definition: concentration of Rn220 in detector
   Kr85:
