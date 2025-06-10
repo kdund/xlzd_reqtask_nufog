@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.stats as sps
 import yaml
-from importlib_resources import files
+from importlib.resources import files
 import inference_interface as ii
 import pickle as pkl
 from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNRSolarSource, XLZDvNROtherLNGSSource, XLZDWIMPSource, XLZDNeutronSource
@@ -107,11 +107,12 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
     fd_sources["CEvNS_other_LNGS"] =XLZDvNROtherLNGSSource(                        **common_pass_parameters)
     fd_sources["neutrons"]= XLZDNeutronSource(                                     **common_pass_parameters)
 
-    wimp_masses =  analysis_parameters["wimp_mass"]["value"]
+    fd_sources["WIMP"]= XLZDWIMPSource(wimp_mass = analysis_parameters["wimp_mass_benchmark"]["value"], **common_pass_parameters)    
+    wimp_masses =  analysis_parameters["wimp_mass"]["value"] 
     if type(wimp_masses) != list: 
         wimp_masses = [wimp_masses]
     for wimp_mass in wimp_masses:
-        fd_sources["WIMP_{:.1f}".format(wimp_mass)]= XLZDWIMPSource(wimp_mass = wimp_mass, **common_pass_parameters)
+        fd_sources["WIMP{:.0f}".format(wimp_mass)]= XLZDWIMPSource(wimp_mass = wimp_mass, **common_pass_parameters)
 
     cs1_bins = np.linspace(analysis_parameters['cs1_range']['value'][0],
                            analysis_parameters['cs1_range']['value'][-1],
@@ -154,6 +155,8 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
 
     # Different normalisation procedure
     templates['neutrons'] = templates['neutrons'] / templates['neutrons'].n * mus['CEvNS_other_LNGS'] * parameters['neutron']
+
+    templates['WIMP'] = templates['WIMP'] * (analysis_parameters["wimp_cross-section_benchmark"]["value"] / 1e-45)
 
     for sname, template in templates.items():
         print(f'{sname}: {template.n}')

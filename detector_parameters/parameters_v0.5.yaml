@@ -76,7 +76,7 @@ parameters:
 # Backgrounds
 background_rates:
   Pb214:
-    value: 0.1
+    value: 0.0079
     unit: microBq/kg
     definition: concentration of Rn220 in detector
   Kr85:
@@ -130,6 +130,14 @@ wimp_analysis_parameters:
     definition: number of PMTs needed to be hit in coincidence
   wimp_mass: 
     value: 
-      - 5000.
+      - 5000
     unit: GeV/c2
     definition: WIMP mass tested
+  wimp_mass_benchmark: 
+    value: 2827
+    unit: GeV/c2
+    definition: Benchmark WIMP mass
+  wimp_cross-section_benchmark:
+    value: 2.05e-47
+    unit: cm^2
+    definition: cross-section default in FlameNEST
