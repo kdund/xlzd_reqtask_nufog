@@ -136,17 +136,31 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
     mus = dict()
     templates = dict()
     for k, source in tqdm(fd_sources.items()):
-        hist = Histdd(**hist_args)
+        hist_2d_args = dict(
+                bins = (cs1_bins, log10cs2_bins),
+                axis_names = ['cS1', 'log10_cS2'])
+        hist_2d = Histdd(**hist_2d_args)
 
         data = source.simulate(n_samples)
         cS1 = data['cs1'].values
         log10_cS2 = np.log10(data['cs2'].values)
         rsq = (data['r'].values)**2
 
+        hist_2d.add(cS1, log10_cS2)
+
+        hist = Histdd(**hist_args)
         if use_radius:
-            hist.add(cS1, log10_cS2, rsq)
+            hist_1d_args = dict(
+                bins = (rsq_bins,),
+                axis_names = ['rsq'])
+            hist_1d = Histdd(**hist_1d_args)
+            hist_1d.add(rsq)
+            hist_1d = hist_1d / hist_1d.n
+
+            hist.histogram = np.array([hist_2d.histogram * rsq_scaling for rsq_scaling in hist_1d.histogram])
+            hist.histogram = np.transpose(hist.histogram, [1, 2, 0])
         else:
-            hist.add(cS1, log10_cS2)
+            hist = hist_2d
 
         mus[k] = source.estimate_mu(n_trials = n_samples)
         hist.histogram = mus[k] * (hist.histogram / hist.n)

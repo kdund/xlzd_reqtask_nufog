@@ -13,26 +13,32 @@ parameters:
     value: 7.5
     range:
       - 6.
+      - 6.75
       - 7.5
     unit: kV/cm
     definition: extraction field in gas
-  electron_livetime:
-    value: 10.
-    range:
-      - 5.
-      - 10.
-      - 50.
-    unit: ms
-    definition: time for an e-fold reduction of the drifting electron cloud
   PMT_quantum_efficiency:
     value: 0.31
     range:
+      - 0.25
       - 0.31
-      - 0.35
+      - 0.37
     unit: PMT hit / photon
     definition: probability of an incident photon to cause a PMT hit
+  g1_gas:
+    value: 0.1
+    range:
+      - 0.08
+      - 0.1
+      - 0.12
+    unit: phd/photon
+    definition: mean S1 per scintillation photon emitted
 
   # Parameters we probably don't want to vary just yet
+  electron_livetime:
+    value: 10.
+    unit: ms
+    definition: time for an e-fold reduction of the drifting electron cloud
   temperature: 
     value: 174.1
     unit: K
@@ -49,10 +55,6 @@ parameters:
     value: 0.2
     unit: probability
     definition: probability for a photon to cause a double-photon emission of a photon
-  g1_gas:
-    value: 0.1
-    unit: phd/photon
-    definition: mean S1 per scintillation photon emitted
   s2_fano: 
     value: 2.
     unit: 1
@@ -76,7 +78,7 @@ parameters:
 # Backgrounds
 background_rates:
   Pb214:
-    value: 0.0079
+    value: 0.1
     unit: microBq/kg
     definition: concentration of Rn220 in detector
   Kr85:
