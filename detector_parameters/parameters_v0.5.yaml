@@ -25,20 +25,20 @@ parameters:
       - 0.37
     unit: PMT hit / photon
     definition: probability of an incident photon to cause a PMT hit
-  g1_gas:
-    value: 0.1
-    range:
-      - 0.08
-      - 0.1
-      - 0.12
-    unit: phd/photon
-    definition: mean S1 per scintillation photon emitted
-
-  # Parameters we probably don't want to vary just yet
   electron_livetime:
     value: 10.
+    range:
+      - 5.
+      - 10.
+      - 50.
     unit: ms
     definition: time for an e-fold reduction of the drifting electron cloud
+
+  # Parameters we probably don't want to vary just yet
+  g1_gas:
+    value: 0.1
+    unit: phd/photon
+    definition: mean S2 per electroluminescence photon emitted
   temperature: 
     value: 174.1
     unit: K
