@@ -99,7 +99,7 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
 
     fd_sources = dict()
     fd_sources["SolarER"] = XLZDvERSource(                                         **common_pass_parameters)
-    fd_sources["Pb214"]   = XLZDPb214Source(activity_mBq_kg = parameters["Pb214"], **common_pass_parameters)
+    fd_sources["Pb214"]   = XLZDPb214Source(activity_uBq_kg = parameters["Pb214"], **common_pass_parameters)
     fd_sources["Kr85"]    = XLZDKr85Source(activity_ppt = parameters["Kr85"],      **common_pass_parameters)
     fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
     fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
