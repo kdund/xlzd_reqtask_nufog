@@ -211,7 +211,7 @@ def Sensitivity_curve(FVmass_range, signal_acc, beta_acc, gamma_acc, eres = 1.0,
     ROI_width = round(2 * eres / 100 * E_Qbb, 1)
     Sensitivity = signal_acc * sensitivity(FVmass_range, 
                                            gamma_acc * Extr_Bkg(FVmass_range, Model = gamma_args[0], LXeMass = gamma_args[1], 
-                                                                eres = eres, gamma_frac = gamma_args[2]) +
+                                           eres = eres, gamma_frac = gamma_args[2]) +
                                            beta_acc * Intr_Bkg(*beta_args, enrichment, flux)[0], time = exposuretime, 
                                            ROI_width = ROI_width, enrichment = enrichment, metric = metric)
     
