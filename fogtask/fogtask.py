@@ -260,20 +260,27 @@ def generate_templates(
         parameter_string = template_format_string.format(**parameters)
         file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
-        generate_template_set(mode=mode, signal_type=signal_type,
+
+        if isfile(file_name+".ii.h5") and skip_generated:
+            pass
+        else:
+            generate_template_set(mode=mode, signal_type=signal_type,
                               parameters=parameters,
                               analysis_parameters = analysis_parameters,
                               n_samples = n_samples,
                               file_name = file_name,
                               use_radius = use_radius)
     else:
-        for pars in tqdm(product_dict(**ret_iter), desc="Generating several templates"):
+        n_pars = 0
+        for p in  product_dict(**ret_iter):
+            n_pars +=1
+        for pars in tqdm(product_dict(**ret_iter), desc="Generating several templates", total=n_pars):
             parameters.update(pars)
             parameter_string = template_format_string.format(**parameters)
             file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
 
-            if isfile(file_name) and skip_generated:
+            if isfile(file_name+".ii.h5") and skip_generated:
                 pass
             else:
                 generate_template_set(mode=mode, signal_type=signal_type,
