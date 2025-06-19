@@ -95,7 +95,7 @@ wimp_analysis_parameters:
   cs1_range:
     value:
       - 0.
-      - 100.
+      - 720.
     unit: phe
     definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
   cs1_bins:
@@ -105,7 +105,7 @@ wimp_analysis_parameters:
   cs2_range:
     value:
       - 2.5
-      - 4.
+      - 5.
     unit: log10(cS2[phe])
     definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
   cs2_bins:
@@ -130,16 +130,20 @@ wimp_analysis_parameters:
     value: 4
     unit: PMT hits
     definition: number of PMTs needed to be hit in coincidence
-  wimp_mass: 
+  mass: 
     value: 
-      - 5000
+      - 10
+      - 12
+      - 14
+      - 17
+      - 21
+      - 30
+      - 40
+      - 50
+      - 100
+      - 200
+      - 400
+      - 1000
+      - 4000
     unit: GeV/c2
     definition: WIMP mass tested
-  wimp_mass_benchmark: 
-    value: 2827
-    unit: GeV/c2
-    definition: Benchmark WIMP mass
-  wimp_cross-section_benchmark:
-    value: 2.05e-47
-    unit: cm^2
-    definition: cross-section default in FlameNEST

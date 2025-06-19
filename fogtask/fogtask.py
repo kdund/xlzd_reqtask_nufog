@@ -4,13 +4,18 @@ import yaml
 from importlib.resources import files
 import inference_interface as ii
 import pickle as pkl
-from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source, XLZDvNRSolarSource, XLZDvNROtherLNGSSource, XLZDWIMPSource, XLZDNeutronSource
+
+from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source
+from flamedisx.xlzd import XLZDvNRSolarSource, XLZDvNROtherLNGSSource, XLZDvNROtherSURFSource, XLZDNeutronSource
+from flamedisx.xlzd  import XLZDWIMPSource, XLZDEFTScalarO6Source
+from flamedisx.xlzd  import XLZDALPGalacticDMSource, XLZDHiddenPhotonSource
+
 from tqdm import tqdm
 from multihist import Histdd
 from itertools import product as iterproduct
 from copy import deepcopy
 
-default_version = "v0.5"
+default_version = "v1.0"
 
 def test_util():
     print("I'm helping!")
@@ -25,18 +30,15 @@ def product_dict(**kwargs):
     for instance in iterproduct(*kwargs.values()):
         yield dict(zip(keys, instance))
 
-def get_parameters(version=default_version):
-    fname = files("detector_parameters").joinpath("parameters_{version:s}.yaml".format(version=version))
+def get_parameters(mode, version=default_version):
+    fname = files("detector_parameters").joinpath(f'parameters_{mode}_{version}.yaml')
     with open(fname,"r") as file:
         ret = yaml.safe_load(file)
     return ret
 
-def get_detector_parameters(version=default_version):
-    return get_parameters(version)["parameters"]
-
-def get_template_parameters(version=default_version):
-    parameters = get_parameters(version)["parameters"]
-    parameters.update(get_parameters(version)["background_rates"])
+def get_template_parameters(mode, version=default_version):
+    parameters = get_parameters(mode, version)["parameters"]
+    parameters.update(get_parameters(mode, version)["background_rates"])
     ret_fix = dict()
     ret_iter = dict()
     nominal_parameters = dict()
@@ -45,16 +47,16 @@ def get_template_parameters(version=default_version):
         if "range" in i.keys():
             ret_iter[k] = i["range"]
             nominal_parameters[k] = i.get("nominal_value", i["value"])
-            template_format_string += k+"_{"+k+":"+i.get("format",".2f")+"}"
+            template_format_string += '_'+k+"_{"+k+":"+i.get("format",".2f")+"}"
         else:
             ret_fix[k] = i["value"]
             nominal_parameters[k] = i["value"]
     return ret_fix, ret_iter, nominal_parameters, template_format_string 
 
-def save_dict_to_pickle(ret, file_name, signal_pattern = "WIMP"):
+def save_dict_to_pickle(ret, file_name, signal_type="WIMP"):
     pdfs = [dict(), dict()]
     for k,h in ret.items():
-        if signal_pattern in k:
+        if signal_type in k:
             pdfs[1][k] = h
         else:
             pdfs[0][k] = h
@@ -69,7 +71,7 @@ def save_dict_to_ii(ret, file_name):
         )
 
 
-def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7), file_name = None, use_radius = False):
+def generate_template_set(mode, signal_type, parameters, analysis_parameters, n_samples = int(1e7), file_name = None, use_radius = False):
     """
     For a fixed set of parameters, generate all templates used in the XLZD flamefit template generation. If file_name is
     not None, store the templates both as pickle and inference_interface files
@@ -98,79 +100,131 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
     )
 
     fd_sources = dict()
-    fd_sources["SolarER"] = XLZDvERSource(                                         **common_pass_parameters)
-    fd_sources["Pb214"]   = XLZDPb214Source(activity_uBq_kg = parameters["Pb214"], **common_pass_parameters)
-    fd_sources["Kr85"]    = XLZDKr85Source(activity_ppt = parameters["Kr85"],      **common_pass_parameters)
-    fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
-    fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
-    fd_sources["CEvNS_solar"] = XLZDvNRSolarSource(                                **common_pass_parameters)
-    fd_sources["CEvNS_other_LNGS"] =XLZDvNROtherLNGSSource(                        **common_pass_parameters)
-    fd_sources["neutrons"]= XLZDNeutronSource(                                     **common_pass_parameters)
-
-    fd_sources["WIMP"]= XLZDWIMPSource(wimp_mass = analysis_parameters["wimp_mass_benchmark"]["value"], **common_pass_parameters)    
-    wimp_masses =  analysis_parameters["wimp_mass"]["value"] 
-    if type(wimp_masses) != list: 
-        wimp_masses = [wimp_masses]
-    for wimp_mass in wimp_masses:
-        fd_sources["WIMP{:.0f}".format(wimp_mass)]= XLZDWIMPSource(wimp_mass = wimp_mass, **common_pass_parameters)
-
-    cs1_bins = np.linspace(analysis_parameters['cs1_range']['value'][0],
-                           analysis_parameters['cs1_range']['value'][-1],
-                           analysis_parameters["cs1_bins"]["value"])
-    log10cs2_bins = np.linspace(analysis_parameters['cs2_range']['value'][0],
-                                analysis_parameters['cs2_range']['value'][-1],
-                                analysis_parameters["cs2_bins"]["value"])
-    rsq_bins = np.linspace(analysis_parameters['rsq_range']['value'][0],
-                           analysis_parameters['rsq_range']['value'][-1],
-                           analysis_parameters["rsq_bins"]["value"])
-
-    if use_radius:
-        hist_args = dict(
-                bins = (cs1_bins, log10cs2_bins, rsq_bins),
-                axis_names = ['cS1', 'log10_cS2', 'rsq'])
+    if mode in ['LENR', 'HENR']:
+        fd_sources["SolarER"] = XLZDvERSource(                                         **common_pass_parameters)
+        fd_sources["Pb214"]   = XLZDPb214Source(activity_uBq_kg = parameters["Pb214"], **common_pass_parameters)
+        fd_sources["Kr85"]    = XLZDKr85Source(activity_ppt = parameters["Kr85"],      **common_pass_parameters)
+        fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
+        fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
+        fd_sources["CEvNS_solar"] = XLZDvNRSolarSource(                                **common_pass_parameters)
+        fd_sources["CEvNS_other_LNGS"] =XLZDvNROtherLNGSSource(                        **common_pass_parameters)
+        fd_sources["CEvNS_other_SURF"] =XLZDvNROtherSURFSource(                        **common_pass_parameters)
+        fd_sources["neutrons"]= XLZDNeutronSource(                                     **common_pass_parameters)
+    elif mode == 'LEER':
+        fd_sources["SolarER"] = XLZDvERSource(                                         **common_pass_parameters)
+        fd_sources["Pb214"]   = XLZDPb214Source(activity_uBq_kg = parameters["Pb214"], **common_pass_parameters)
+        fd_sources["Kr85"]    = XLZDKr85Source(activity_ppt = parameters["Kr85"],      **common_pass_parameters)
+        fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
+        fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
     else:
+        raise ValueError(f'Invalid mode {mode}.')
+
+    if signal_type == 'WIMP':
+        if mode == 'LENR':
+            signal_source = XLZDWIMPSource
+            signal_parameter = 'wimp_mass'
+        elif mode == 'HENR':
+            signal_source = XLZDEFTScalarO6Source
+            signal_parameter = 'mass_GeV'
+        else:
+             raise ValueError(f'Invalid mode {mode}.')
+    elif signal_type == 'ALP':
+        signal_source = XLZDALPGalacticDMSource
+        signal_parameter = 'mass_keV'
+    elif signal_type == 'HP':
+        signal_source = XLZDHiddenPhotonSource
+        signal_parameter = 'mass_keV'
+    else:
+        raise ValueError(f'Invalid signal type {signal_type}.')
+    
+    masses =  analysis_parameters["mass"]["value"]
+    if type(masses) != list:
+        masses = [masses]
+    for mass in masses:
+        signal_dict = {signal_parameter: mass}
+        fd_sources[f'{signal_type}{mass:.0f}']= signal_source(**signal_dict, **common_pass_parameters)
+    if mode == 'LENR':
+        fd_sources["WIMP"]= XLZDWIMPSource(wimp_mass = analysis_parameters["wimp_mass_benchmark"]["value"], **common_pass_parameters)
+
+    if mode in ['LENR', 'HENR']:
+        cs1_bins = np.linspace(analysis_parameters['cs1_range']['value'][0],
+                              analysis_parameters['cs1_range']['value'][-1],
+                              analysis_parameters['cs1_bins']["value"])
+        log10cs2_bins = np.linspace(analysis_parameters['cs2_range']['value'][0],
+                                    analysis_parameters['cs2_range']['value'][-1],
+                                    analysis_parameters['cs2_bins']["value"])
+        rsq_bins = np.linspace(analysis_parameters['rsq_range']['value'][0],
+                               analysis_parameters['rsq_range']['value'][-1],
+                               analysis_parameters['rsq_bins']["value"])
+        if use_radius:
+            hist_args = dict(
+                    bins = (cs1_bins, log10cs2_bins, rsq_bins),
+                    axis_names = ['cS1', 'log10_cS2', 'rsq'])
+        else:
+            hist_args = dict(
+                    bins = (cs1_bins, log10cs2_bins),
+                    axis_names = ['cS1', 'log10_cS2'])
+    elif mode == 'LEER':
+        recoE_bins = np.linspace(analysis_parameters['recoE_range']['value'][0],
+                                 analysis_parameters['recoE_range']['value'][-1],
+                                 analysis_parameters["recoE_bins"]['value'])
         hist_args = dict(
-                bins = (cs1_bins, log10cs2_bins),
-                axis_names = ['cS1', 'log10_cS2'])
+                bins = (recoE_bins,),
+                axis_names = ['recoE'])
+    else:
+        raise ValueError(f'Invalid mode {mode}.')
+
 
     mus = dict()
     templates = dict()
+
     for k, source in tqdm(fd_sources.items()):
-        hist_2d_args = dict(
-                bins = (cs1_bins, log10cs2_bins),
-                axis_names = ['cS1', 'log10_cS2'])
-        hist_2d = Histdd(**hist_2d_args)
-
         data = source.simulate(n_samples)
-        cS1 = data['cs1'].values
-        log10_cS2 = np.log10(data['cs2'].values)
-        rsq = (data['r'].values)**2
-
-        hist_2d.add(cS1, log10_cS2)
-
         hist = Histdd(**hist_args)
-        if use_radius:
-            hist_1d_args = dict(
-                bins = (rsq_bins,),
-                axis_names = ['rsq'])
-            hist_1d = Histdd(**hist_1d_args)
-            hist_1d.add(rsq)
-            hist_1d = hist_1d / hist_1d.n
 
-            hist.histogram = np.array([hist_2d.histogram * rsq_scaling for rsq_scaling in hist_1d.histogram])
-            hist.histogram = np.transpose(hist.histogram, [1, 2, 0])
+        if mode in ['LENR', 'HENR']:
+            cS1 = data['cs1'].values
+            log10_cS2 = np.log10(data['cs2'].values)
+            rsq = (data['r'].values)**2
+
+            hist_2d_args = dict(
+                    bins = (cs1_bins, log10cs2_bins),
+                    axis_names = ['cS1', 'log10_cS2'])
+            hist_2d = Histdd(**hist_2d_args)
+            hist_2d.add(cS1, log10_cS2)
+
+            if use_radius:
+                hist_1d_args = dict(
+                    bins = (rsq_bins,),
+                    axis_names = ['rsq'])
+                hist_1d = Histdd(**hist_1d_args)
+                hist_1d.add(rsq)
+                hist_1d = hist_1d / hist_1d.n
+
+                hist.histogram = np.array([hist_2d.histogram * rsq_scaling for rsq_scaling in hist_1d.histogram])
+                hist.histogram = np.transpose(hist.histogram, [1, 2, 0])
+            else:
+                hist = hist_2d
+
+        elif mode == 'LEER':
+            import matplotlib.pyplot as plt
+            hist.add(data['ces_er_equivalent'].values)
+            plt.figure()
+            hist.plot()
+
         else:
-            hist = hist_2d
+            raise ValueError(f'Invalid mode {mode}.')
 
         mus[k] = source.estimate_mu(n_trials = n_samples)
         hist.histogram = mus[k] * (hist.histogram / hist.n)
 
         templates[k] = hist
 
-    # Different normalisation procedure
-    templates['neutrons'] = templates['neutrons'] / templates['neutrons'].n * mus['CEvNS_other_LNGS'] * parameters['neutron']
-
-    templates['WIMP'] = templates['WIMP'] * (analysis_parameters["wimp_cross-section_benchmark"]["value"] / 1e-45)
+    # Different normalisation procedures
+    if 'neutrons' in templates:
+        templates['neutrons'] = templates['neutrons'] / templates['neutrons'].n * mus['CEvNS_other_LNGS'] * parameters['neutron']
+    if 'WIMP' in templates:
+        templates['WIMP'] = templates['WIMP'] * (analysis_parameters["wimp_cross-section_benchmark"]["value"] / 1e-45)
 
     for sname, template in templates.items():
         print(f'{sname}: {template.n}')
@@ -178,31 +232,34 @@ def generate_template_set(parameters, analysis_parameters, n_samples = int(1e7),
     if file_name is not None:
         fname = file_name.format(**parameters)
 
-        save_dict_to_pickle(templates, fname+".pkl", "WIMP")
+        save_dict_to_pickle(templates, fname + mode + "_" + ".pkl", signal_type)
         save_dict_to_ii(templates, fname+".ii.h5")
 
     return templates
 
-def generate_all_wimp_templates(
+def generate_templates(
+        mode = 'LENR',
+        signal_type = 'WIMP',
         version = default_version,
         n_samples = int(1e7),
-        file_name_pattern = "{parameter_string:s}",
+        file_name_pattern = "{version}{parameter_string}",
         nominal_only = True,
         use_radius = False,
         ):
 
-    all_parameters = get_parameters(version=version)
+    all_parameters = get_parameters(mode=mode, version=version)
     analysis_parameters = all_parameters["wimp_analysis_parameters"]
 
-    ret_fix, ret_iter, nominal_parameters, template_format_string = get_template_parameters(version=version)
+    ret_fix, ret_iter, nominal_parameters, template_format_string = get_template_parameters(mode=mode, version=version)
 
     parameters = deepcopy(nominal_parameters)
 
     if nominal_only:
         parameter_string = template_format_string.format(**parameters)
-        file_name = file_name_pattern.format(version=version,parameter_string=parameter_string)
+        file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
-        generate_template_set(parameters=parameters,
+        generate_template_set(mode=mode, signal_type=signal_type,
+                              parameters=parameters,
                               analysis_parameters = analysis_parameters,
                               n_samples = n_samples,
                               file_name = file_name,
@@ -211,7 +268,7 @@ def generate_all_wimp_templates(
         for pars in product_dict(**ret_iter):
             parameters.update(pars)
             parameter_string = template_format_string.format(**parameters)
-            file_name = file_name_pattern.format(version=version,parameter_string=parameter_string)
+            file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
             generate_template_set(parameters=parameters,
                                   analysis_parameters = analysis_parameters,
