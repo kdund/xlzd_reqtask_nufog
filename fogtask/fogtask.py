@@ -4,6 +4,7 @@ import yaml
 from importlib.resources import files
 import inference_interface as ii
 import pickle as pkl
+from os.path import isfile
 
 from flamedisx.xlzd import XLZDvERSource, XLZDPb214Source, XLZDKr85Source, XLZDXe124Source, XLZDXe136Source
 from flamedisx.xlzd import XLZDvNRSolarSource, XLZDvNROtherLNGSSource, XLZDvNROtherSURFSource, XLZDNeutronSource
@@ -245,6 +246,7 @@ def generate_templates(
         file_name_pattern = "{version}{parameter_string}",
         nominal_only = True,
         use_radius = False,
+        skip_generated = True,
         ):
 
     all_parameters = get_parameters(mode=mode, version=version)
@@ -258,20 +260,32 @@ def generate_templates(
         parameter_string = template_format_string.format(**parameters)
         file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
-        generate_template_set(mode=mode, signal_type=signal_type,
+
+        if isfile(file_name+".ii.h5") and skip_generated:
+            pass
+        else:
+            generate_template_set(mode=mode, signal_type=signal_type,
                               parameters=parameters,
                               analysis_parameters = analysis_parameters,
                               n_samples = n_samples,
                               file_name = file_name,
                               use_radius = use_radius)
     else:
-        for pars in product_dict(**ret_iter):
+        n_pars = 0
+        for p in  product_dict(**ret_iter):
+            n_pars +=1
+        for pars in tqdm(product_dict(**ret_iter), desc="Generating several templates", total=n_pars):
             parameters.update(pars)
             parameter_string = template_format_string.format(**parameters)
             file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
-            generate_template_set(parameters=parameters,
-                                  analysis_parameters = analysis_parameters,
-                                  n_samples = n_samples,
-                                  file_name = file_name,
-                                  use_radius = use_radius)
+
+            if isfile(file_name+".ii.h5") and skip_generated:
+                pass
+            else:
+                generate_template_set(mode=mode, signal_type=signal_type,
+                              parameters=parameters,
+                              analysis_parameters = analysis_parameters,
+                              n_samples = n_samples,
+                              file_name = file_name,
+                              use_radius = use_radius)
