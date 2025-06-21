@@ -243,11 +243,13 @@ def generate_templates(
         signal_type = 'WIMP',
         version = default_version,
         n_samples = int(1e7),
-        file_name_pattern = "{version}{parameter_string}",
+        file_name = None,
         nominal_only = True,
         use_radius = False,
         skip_generated = True,
         ):
+
+    file_name_pattern = "{version}{parameter_string}",
 
     all_parameters = get_parameters(mode=mode, version=version)
     analysis_parameters = all_parameters["wimp_analysis_parameters"]
@@ -258,8 +260,11 @@ def generate_templates(
 
     if nominal_only:
         parameter_string = template_format_string.format(**parameters)
-        file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
+        if file_name is not None:
+            file_name = file_name
+        else:
+            file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
         if isfile(file_name+".ii.h5") and skip_generated:
             pass
@@ -278,7 +283,6 @@ def generate_templates(
             parameters.update(pars)
             parameter_string = template_format_string.format(**parameters)
             file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
-
 
             if isfile(file_name+".ii.h5") and skip_generated:
                 pass
