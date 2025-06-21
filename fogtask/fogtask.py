@@ -233,8 +233,8 @@ def generate_template_set(mode, signal_type, parameters, analysis_parameters, n_
     if file_name is not None:
         fname = file_name.format(**parameters)
 
-        save_dict_to_pickle(templates, fname + mode + "_" + ".pkl", signal_type)
-        save_dict_to_ii(templates, fname+".ii.h5")
+        save_dict_to_pickle(templates, f'{fname}.pkl')
+        save_dict_to_ii(templates, f'{fname}.ii.h5')
 
     return templates
 
