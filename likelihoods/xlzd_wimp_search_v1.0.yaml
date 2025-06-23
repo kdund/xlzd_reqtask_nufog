@@ -21,31 +21,31 @@ parameter_definition:
 
   wimp_mass:
     nominal_value: 40.
-      #ptype: shape
-      #fittable: true
+    fittable: false
     description: WIMP mass in GeV/c^2
-    blueice_anchors: 
-      - 10
-      - 16
-      - 19
-      - 32
-      - 36
-      - 40
-      - 46
-      - 60
-      - 65
-      - 91
-      - 129
-      - 182
-      - 361
-      - 508
-      - 1000
-    fit_limits: 
-      - 6.0
-      - 1000.0
-    parameter_interval_bounds:
-      - 6.0
-      - 1000.0
+    #ptype: shape
+    #blueice_anchors: 
+    #  - 10
+    #  - 16
+    #  - 19
+    #  - 32
+    #  - 36
+    #  - 40
+    #  - 46
+    #  - 60
+    #  - 65
+    #  - 91
+    #  - 129
+    #  - 182
+    #  - 361
+    #  - 508
+    #  - 1000
+    #fit_limits: 
+    #  - 6.0
+    #  - 1000.0
+    #parameter_interval_bounds:
+    #  - 6.0
+    #  - 1000.0
 
   PMT_quantum_efficiency:
     nominal_value: 0.31
@@ -164,7 +164,8 @@ parameter_definition:
 
 likelihood_config:
   likelihood_weights: [1]
-  template_folder: /Users/kdund/Desktop/xlzd_reqtask_nufog/templates_v1.0/ # will try to find the templates in alea
+  template_folder: /home/kmoraa/xlzd_reqtask_nufog/data/
+  # /Users/kdund/Desktop/xlzd_reqtask_nufog/templates_v1.0/ # will try to find the templates in alea
   likelihood_terms:
     # SR0
     - name: sr0
