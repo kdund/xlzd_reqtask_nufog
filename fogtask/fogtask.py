@@ -31,6 +31,25 @@ def product_dict(**kwargs):
     for instance in iterproduct(*kwargs.values()):
         yield dict(zip(keys, instance))
 
+def cross_dict(nominal_parameters=dict(),**kwargs):
+    """
+    return a list of dicts where only one parameter at a time is varied
+    """
+    ret = []
+    keys = kwargs.keys()
+    
+    prototype = {k:nominal_parameters[k] for k in keys}
+    ret.append(prototype)
+
+    for k in keys:
+        for par in kwargs[k]:
+            if prototype[k] != par:
+                rret = deepcopy(prototype)
+                rret[k] = par
+                ret.append(rret)
+    return ret
+
+
 def get_parameters(mode, version=default_version):
     fname = files("detector_parameters").joinpath(f'parameters_{mode}_{version}.yaml')
     with open(fname,"r") as file:
@@ -244,7 +263,7 @@ def generate_templates(
         version = default_version,
         n_samples = int(1e7),
         file_name_pattern = "{version}{parameter_string}",
-        nominal_only = True,
+        scan_parameters = False, #use only nominal if False, if "product" get all variations, if "cross" vary only one parameter at a time
         use_radius = False,
         skip_generated = True,
         ):
@@ -256,7 +275,19 @@ def generate_templates(
 
     parameters = deepcopy(nominal_parameters)
 
-    if nominal_only:
+    if not scan_parameters:
+        parameters_array = [parameters]
+    elif scan_parameters == "product":
+        parameters_array = [p for p in product_dict(**ret_iter)]
+    elif scan_parameters == "cross":
+        parameters_array = [p for p in cross_dict(nominal_parameters=nominal_parameters, **ret_iter)]
+    else:
+        raise NotImplementedError("scan_parameters must be False, 'cross' or 'product'!")
+
+    n_pars = len(parameters_array)
+
+    for pars in tqdm(parameters_array, desc="Generating several templates", total=n_pars):
+        parameters.update(pars)
         parameter_string = template_format_string.format(**parameters)
         file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
 
@@ -265,27 +296,8 @@ def generate_templates(
             pass
         else:
             generate_template_set(mode=mode, signal_type=signal_type,
-                              parameters=parameters,
-                              analysis_parameters = analysis_parameters,
-                              n_samples = n_samples,
-                              file_name = file_name,
-                              use_radius = use_radius)
-    else:
-        n_pars = 0
-        for p in  product_dict(**ret_iter):
-            n_pars +=1
-        for pars in tqdm(product_dict(**ret_iter), desc="Generating several templates", total=n_pars):
-            parameters.update(pars)
-            parameter_string = template_format_string.format(**parameters)
-            file_name = file_name_pattern.format(version=version, parameter_string=parameter_string)
-
-
-            if isfile(file_name+".ii.h5") and skip_generated:
-                pass
-            else:
-                generate_template_set(mode=mode, signal_type=signal_type,
-                              parameters=parameters,
-                              analysis_parameters = analysis_parameters,
-                              n_samples = n_samples,
-                              file_name = file_name,
-                              use_radius = use_radius)
+                          parameters=parameters,
+                          analysis_parameters = analysis_parameters,
+                          n_samples = n_samples,
+                          file_name = file_name,
+                          use_radius = use_radius)
