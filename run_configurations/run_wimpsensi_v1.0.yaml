@@ -69,6 +69,71 @@ computation_options:
         toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
       }
 
+  sensitivity_varypar:
+    to_zip: {}
+    to_vary: {
+      nominal_values: [
+        {"PMT_quantum_efficiency":0.31,  #default
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.37,  #QE variation
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.25,  
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  #Drift field variation
+         "drift_field":300.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":25.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  # Gas Field variation
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":6.75},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":6.},
+        {"PMT_quantum_efficiency":0.31,  #elife variation
+         "drift_field":80.0,
+         "electron_livetime":50.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":80.0,
+         "electron_livetime":5.,
+         "gas_field":7.5},
+      ],
+      #livetime: [5,10,20,50,75,100,150,200,500,700,1000],
+      livetime: [10,30,100,300,1000],
+      generate_values: [
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
+      ],
+      #wimp_mass: [10,16,32,40,60,91,129,361,1000],
+      wimp_mass: [10,40,1000]
+    }
+    in_common:
+      {
+        #detector_performance: "good",
+        #detector_location: "LNGS",
+        poi_expectation: 0.,
+        hypotheses: ["free", "zero", "true"],
+        output_filename: "toymc_sensi_v1.0_PMT_quantum_efficiency_{PMT_quantum_efficiency:.2f}_drift_field_{drift_field:.2f}_electron_livetime_{electron_livetime:.2f}_gas_field_{gas_field:.2f}.ii_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.h5",
+        n_mc: 500,
+        n_batch: 5,
+        #n_batch: 20,
+        compute_confidence_interval: True,
+        asymptotic_dof: 1,
+        toydata_mode: "generate",
+        toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+      }
+
       #slurm_configurations:
       #  template_path: null
       #  hours: 2.
@@ -79,7 +144,7 @@ computation_options:
       #  constraint: cpu
 slurm_configurations:
   template_path: null
-  hours: 3.
+  hours: 4.
   mem_per_cpu: 3000
   container: null
   partition: null
