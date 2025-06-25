@@ -95,7 +95,7 @@ wimp_analysis_parameters:
   cs1_range:
     value:
       - 0.
-      - 720.
+      - 100.
     unit: phe
     definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
   cs1_bins:
@@ -105,7 +105,7 @@ wimp_analysis_parameters:
   cs2_range:
     value:
       - 2.5
-      - 4.4
+      - 4.
     unit: log10(cS2[phe])
     definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
   cs2_bins:
@@ -133,21 +133,33 @@ wimp_analysis_parameters:
   mass: 
     value: 
       - 10
-      - 12
-      - 14
-      - 17
-      - 21
-      - 30
+      - 16
+      - 19
+      - 32
+      - 36
       - 40
-      - 50
-      - 100
-      - 200
-      - 400
+      - 46
+      - 60
+      - 65
+      - 91
+      - 129
+      - 182
+      - 361
+      - 508
       - 1000
-      - 4000
+      - 5000
+      - 10000
     unit: GeV/c2
     definition: WIMP mass tested
+  wimp_mass_benchmark: 
+    value: 2827
+    unit: GeV/c2
+    definition: Benchmark WIMP mass
+  wimp_cross-section_benchmark:
+    value: 2.05e-47
+    unit: cm^2
+    definition: Benchmark WIMP cross-section
   energy_max_ER:
-    value: -1.
+    value: 35.
     unit: keV
     definition: Optional - to truncate raw ER energy spectra (continuous) at the upper end, to improve sampling. Set negative to ignore

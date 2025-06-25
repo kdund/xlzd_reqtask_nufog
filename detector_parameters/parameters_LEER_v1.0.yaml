@@ -141,3 +141,7 @@ wimp_analysis_parameters:
       - 15
     unit: keV/c2
     definition: Signal mass tested
+  energy_max_ER:
+    value: -1.
+    unit: keV
+    definition: Optional - to truncate raw ER energy spectra (continuous) at the upper end, to improve sampling. Set negative to ignore

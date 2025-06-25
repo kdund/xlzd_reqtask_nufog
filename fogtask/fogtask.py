@@ -100,23 +100,70 @@ def generate_template_set(mode, signal_type, parameters, analysis_parameters, n_
     configuration = parameters['lce_configuration'],
     )
 
+    if analysis_parameters['energy_max_ER']['value'] > 0.:
+        energy_max_ER = analysis_parameters['energy_max_ER']['value']
+    else:
+        energy_max_ER = None
+
     fd_sources = dict()
     if mode in ['LENR', 'HENR']:
-        fd_sources["SolarER"] = XLZDvERSource(                                         **common_pass_parameters)
-        fd_sources["Pb214"]   = XLZDPb214Source(activity_uBq_kg = parameters["Pb214"], **common_pass_parameters)
-        fd_sources["Kr85"]    = XLZDKr85Source(activity_ppt = parameters["Kr85"],      **common_pass_parameters)
-        fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
-        fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
-        fd_sources["CEvNS_solar"] = XLZDvNRSolarSource(                                **common_pass_parameters)
-        fd_sources["CEvNS_other_LNGS"] =XLZDvNROtherLNGSSource(                        **common_pass_parameters)
-        fd_sources["CEvNS_other_SURF"] =XLZDvNROtherSURFSource(                        **common_pass_parameters)
-        fd_sources["neutrons"]= XLZDNeutronSource(                                     **common_pass_parameters)
+        # ER backgrounds
+        fd_sources["SolarER"] = XLZDvERSource(
+            energy_max=energy_max_ER,
+            **common_pass_parameters
+        )
+        fd_sources["Pb214"] = XLZDPb214Source(
+            activity_uBq_kg=parameters["Pb214"],
+            energy_max=energy_max_ER,
+            **common_pass_parameters
+        )
+        fd_sources["Kr85"] = XLZDKr85Source(
+            activity_ppt=parameters["Kr85"],
+            energy_max=energy_max_ER,
+            **common_pass_parameters
+        )
+        fd_sources["Xe136"] = XLZDXe136Source(
+            energy_max=energy_max_ER,
+            **common_pass_parameters
+        )
+        fd_sources["Xe124"] = XLZDXe124Source(
+            **common_pass_parameters
+        )
+        # NR backgrounds
+        fd_sources["CEvNS_solar"] = XLZDvNRSolarSource(
+            **common_pass_parameters
+        )
+        fd_sources["CEvNS_other_LNGS"] = XLZDvNROtherLNGSSource(
+            **common_pass_parameters
+        )
+        fd_sources["CEvNS_other_SURF"] = XLZDvNROtherSURFSource(
+            **common_pass_parameters
+        )
+        fd_sources["neutrons"] = XLZDNeutronSource(
+            **common_pass_parameters
+        )
     elif mode == 'LEER':
-        fd_sources["SolarER"] = XLZDvERSource(                                         **common_pass_parameters)
-        fd_sources["Pb214"]   = XLZDPb214Source(activity_uBq_kg = parameters["Pb214"], **common_pass_parameters)
-        fd_sources["Kr85"]    = XLZDKr85Source(activity_ppt = parameters["Kr85"],      **common_pass_parameters)
-        fd_sources["Xe136"]   = XLZDXe136Source(                                       **common_pass_parameters)
-        fd_sources["Xe124"]   = XLZDXe124Source(                                       **common_pass_parameters)
+        fd_sources["SolarER"] = XLZDvERSource(
+            energy_max=energy_max_ER,
+            **common_pass_parameters
+        )
+        fd_sources["Pb214"] = XLZDPb214Source(
+            activity_uBq_kg=parameters["Pb214"],
+            energy_max=energy_max_ER,
+            **common_pass_parameters
+        )
+        fd_sources["Kr85"] = XLZDKr85Source(
+            activity_ppt=parameters["Kr85"],
+            energy_max=energy_max_ER,
+            **common_pass_parameters
+        )
+        fd_sources["Xe136"] = XLZDXe136Source(
+            energy_max=energy_max_ER,
+            **common_pass_parameters
+        )
+        fd_sources["Xe124"] = XLZDXe124Source(
+            **common_pass_parameters
+        )
     else:
         raise ValueError(f'Invalid mode {mode}.')
 

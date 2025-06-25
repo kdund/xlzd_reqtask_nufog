@@ -159,3 +159,7 @@ wimp_analysis_parameters:
     value: 2.05e-47
     unit: cm^2
     definition: Benchmark WIMP cross-section
+  energy_max_ER:
+    value: -1.
+    unit: keV
+    definition: Optional - to truncate raw ER energy spectra (continuous) at the upper end, to improve sampling. Set negative to ignore
