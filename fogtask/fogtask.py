@@ -185,12 +185,13 @@ def generate_template_set(mode, signal_type, parameters, analysis_parameters, n_
     else:
         raise ValueError(f'Invalid signal type {signal_type}.')
     
-    masses =  analysis_parameters["mass"]["value"]
-    if type(masses) != list:
-        masses = [masses]
-    for mass in masses:
-        signal_dict = {signal_parameter: mass}
-        fd_sources[f'{signal_type}{mass:.0f}']= signal_source(**signal_dict, **common_pass_parameters)
+    if "mass" in analysis_parameters:
+        masses =  analysis_parameters["mass"]["value"]
+        if type(masses) != list:
+            masses = [masses]
+        for mass in masses:
+            signal_dict = {signal_parameter: mass}
+            fd_sources[f'{signal_type}{mass:.0f}']= signal_source(**signal_dict, **common_pass_parameters)
     if mode == 'LENR':
         fd_sources["WIMP"]= XLZDWIMPSource(wimp_mass = analysis_parameters["wimp_mass_benchmark"]["value"], **common_pass_parameters)
 
@@ -296,7 +297,7 @@ def generate_templates(
         skip_generated = True,
         ):
 
-    file_name_pattern = "{version}{parameter_string}",
+    file_name_pattern = "{version}{parameter_string}"
 
     all_parameters = get_parameters(mode=mode, version=version)
     analysis_parameters = all_parameters["wimp_analysis_parameters"]
