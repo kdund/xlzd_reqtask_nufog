@@ -97,25 +97,33 @@ wimp_analysis_parameters:
   cs1_range:
     value:
       - 0.
-      - 100.
+      - 720.
     unit: phe
     definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
-  cs2_range:
-    value:
-      - 3.4
-      - 4.5
-    unit: log10(cS2[phe])
-    definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
-  recoE_range:
-    value:
-      - 0.
-      - 15.
-    unit: keV
-    definition: Lower and upper range of reconstructed energy
-  recoE_bins:
+  cs1_bins:
     value: 101
     unit: number of bin edges
-    definition: number of equidistant bin edges in recoE
+    definition: number of equidistant bin edges in cs1
+  cs2_range:
+    value:
+      - 2.5
+      - 4.4
+    unit: log10(cS2[phe])
+    definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
+  cs2_bins:
+    value: 101
+    unit: number of bin edges
+    definition: number of equidistant bin edges in cs2
+  rsq_range:
+    value:
+      - 0.
+      - 21542.900625
+    unit: cm^2
+    definition: Lower and upper range of r^2. Maximum value of r is 146.775 cm. See https://github.com/FlamTeam/flamedisx/blob/RJ-XLZD_simple/flamedisx/nest/config/xlzd.ini
+  rsq_bins:
+    value: 51
+    unit: number of bin edges
+    definition: number of equidistant bin edges in r^2
   s2_threshold:
     value: 198.
     unit: phe
@@ -126,24 +134,22 @@ wimp_analysis_parameters:
     definition: number of PMTs needed to be hit in coincidence
   mass: 
     value: 
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
       - 10
-      - 11
       - 12
-      - 13
       - 14
-      - 15
-    unit: keV/c2
-    definition: Signal mass tested
+      - 17
+      - 21
+      - 30
+      - 40
+      - 50
+      - 100
+      - 200
+      - 400
+      - 1000
+      - 4000
+    unit: GeV/c2
+    definition: WIMP mass tested
   energy_max_ER:
-    value: 20.
+    value: -1.
     unit: keV
     definition: Optional - to truncate raw ER energy spectra (continuous) at the upper end, to improve sampling. Set negative to ignore

@@ -1,42 +1,32 @@
 # Detector parameters
 parameters:
-  # Parameters varied for initial studies
+  # Parameters varied for this study
   drift_field:
     value: 80.
     range:
-      - 25.
+      - 10.
+      - 15.
+      - 20.
       - 50.
-      - 80.
       - 100.
+      - 200.
       - 300.
     unit: V/cm
     definition: average drift field in liquid
+
+  # Parameters fixed for this study
   gas_field:
     value: 7.5
-    range:
-      - 6.
-      - 6.75
-      - 7.5
     unit: kV/cm
     definition: extraction field in gas
   PMT_quantum_efficiency:
     value: 0.31
-    range:
-      - 0.25
-      - 0.31
-      - 0.37
     unit: PMT hit / photon
     definition: probability of an incident photon to cause a PMT hit
   electron_livetime:
     value: 10.
-    range:
-      - 5.
-      - 10.
-      - 50.
     unit: ms
     definition: time for an e-fold reduction of the drifting electron cloud
-
-  # Parameters we probably don't want to vary just yet
   g1_gas:
     value: 0.1
     unit: phd/photon
@@ -100,22 +90,30 @@ wimp_analysis_parameters:
       - 100.
     unit: phe
     definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
-  cs2_range:
-    value:
-      - 3.4
-      - 4.5
-    unit: log10(cS2[phe])
-    definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
-  recoE_range:
-    value:
-      - 0.
-      - 15.
-    unit: keV
-    definition: Lower and upper range of reconstructed energy
-  recoE_bins:
+  cs1_bins:
     value: 101
     unit: number of bin edges
-    definition: number of equidistant bin edges in recoE
+    definition: number of equidistant bin edges in cs1
+  cs2_range:
+    value:
+      - 2.5
+      - 4.
+    unit: log10(cS2[phe])
+    definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
+  cs2_bins:
+    value: 101
+    unit: number of bin edges
+    definition: number of equidistant bin edges in cs2
+  rsq_range:
+    value:
+      - 0.
+      - 21542.900625
+    unit: cm^2
+    definition: Lower and upper range of r^2. Maximum value of r is 146.775 cm. See https://github.com/FlamTeam/flamedisx/blob/RJ-XLZD_simple/flamedisx/nest/config/xlzd.ini
+  rsq_bins:
+    value: 51
+    unit: number of bin edges
+    definition: number of equidistant bin edges in r^2
   s2_threshold:
     value: 198.
     unit: phe
@@ -124,26 +122,15 @@ wimp_analysis_parameters:
     value: 4
     unit: PMT hits
     definition: number of PMTs needed to be hit in coincidence
-  mass: 
-    value: 
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
-      - 15
-    unit: keV/c2
-    definition: Signal mass tested
+  wimp_mass_benchmark: 
+    value: 2827
+    unit: GeV/c2
+    definition: Benchmark WIMP mass
+  wimp_cross-section_benchmark:
+    value: 2.05e-47
+    unit: cm^2
+    definition: Benchmark WIMP cross-section
   energy_max_ER:
-    value: 20.
+    value: 35.
     unit: keV
     definition: Optional - to truncate raw ER energy spectra (continuous) at the upper end, to improve sampling. Set negative to ignore
