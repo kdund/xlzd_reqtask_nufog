@@ -141,7 +141,8 @@ parameter_definition:
   Pb214_rate_multiplier:
     nominal_value: 1.0
     ptype: rate
-    uncertainty: 0.167
+    #uncertainty: 0.167
+    uncertainty: 0.01
     relative_uncertainty: true
     fittable: true
     fit_limits:
@@ -171,7 +172,7 @@ likelihood_config:
     - name: sr0
       default_source_class: alea.template_source.TemplateSource
       likelihood_type: blueice.likelihood.UnbinnedLogLikelihood
-        #likelihood_type: blueice.likelihood.BinnedLogLikelihood
+      #likelihood_type: blueice.likelihood.BinnedLogLikelihood
       analysis_space:
         - cs1: np.linspace(0, 100, 101)
         - log10_cs2: np.linspace(2.5,4., 101)

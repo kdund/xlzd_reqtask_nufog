@@ -14,6 +14,7 @@ computation_options:
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":3.},
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":0.3},
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":10.},
           #{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":3.,"neutron_rate_multiplier":1.},
           #{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":.3,"neutron_rate_multiplier":1.},
           {"Pb214_rate_multiplier":3., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
@@ -45,6 +46,7 @@ computation_options:
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":3.},
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":0.3},
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":10.},
           #{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":3.,"neutron_rate_multiplier":1.},
           #{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":.3,"neutron_rate_multiplier":1.},
           {"Pb214_rate_multiplier":3., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
@@ -75,6 +77,7 @@ computation_options:
       generate_values: [
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":3.},
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":10.},
           #{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":0.3},
           #{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":3.,"neutron_rate_multiplier":1.},
           {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":.3,"neutron_rate_multiplier":1.},
@@ -167,6 +170,140 @@ computation_options:
         toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
       }
 
+  sensitivity_varypar_hit:
+    to_zip: {}
+    to_vary: {
+      nominal_values: [
+        {"PMT_quantum_efficiency":0.31,  #default
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.37,  #QE variation
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.25,  
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  #Drift field variation
+         "drift_field":300.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":25.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  # Gas Field variation
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":6.75},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":6.},
+        {"PMT_quantum_efficiency":0.31,  #elife variation
+         "drift_field":80.0,
+         "electron_livetime":50.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":80.0,
+         "electron_livetime":5.,
+         "gas_field":7.5},
+      ],
+      #livetime: [5,10,20,50,75,100,150,200,500,700,1000],
+      #livetime: [10,30,100,300,1000],
+      livetime: [10,300],
+      generate_values: [
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
+      ],
+      #wimp_mass: [10,16,32,40,60,91,129,361,1000],
+      wimp_mass: [10,16,40,91,1000]
+    }
+    in_common:
+      {
+        #detector_performance: "good",
+        #detector_location: "LNGS",
+        common_hypothesis: {"Kr85_rate_multiplier":1.,"SolarER_rate_multiplier":1.,"Xe136_rate_multiplier":1.,"Xe124_rate_multiplier":1.},
+        poi_expectation: 0.,
+        hypotheses: ["free", "zero", "true"],
+        output_filename: "toymc_sensi_v1.0_PMT_quantum_efficiency_{PMT_quantum_efficiency:.2f}_drift_field_{drift_field:.2f}_electron_livetime_{electron_livetime:.2f}_gas_field_{gas_field:.2f}_livetime_{livetime:.0f}_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+        n_mc: 500,
+        n_batch: 20,
+        #n_batch: 20,
+        compute_confidence_interval: True,
+        asymptotic_dof: 1,
+        toydata_mode: "generate",
+        toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+      }
+
+  discovery_varypar:
+    to_zip: {}
+    to_vary: {
+      nominal_values: [
+        {"PMT_quantum_efficiency":0.31,  #default
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.37,  #QE variation
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.25,  
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  #Drift field variation
+         "drift_field":300.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":25.0,
+         "electron_livetime":10.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  # Gas Field variation
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":6.75},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":80.0,
+         "electron_livetime":10.,
+         "gas_field":6.},
+        {"PMT_quantum_efficiency":0.31,  #elife variation
+         "drift_field":80.0,
+         "electron_livetime":50.,
+         "gas_field":7.5},
+        {"PMT_quantum_efficiency":0.31,  
+         "drift_field":80.0,
+         "electron_livetime":5.,
+         "gas_field":7.5},
+      ],
+      #livetime: [5,10,20,50,75,100,150,200,500,700,1000],
+      #livetime: [10,30,100,300,1000],
+      livetime: [10,300,600],
+      generate_values: [
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
+      ],
+      #wimp_mass: [10,16,32,40,60,91,129,361,1000],
+      wimp_mass: [10,40,1000],
+      poi_expectation: [0,5,10,20,30,50],
+    }
+    in_common:
+      {
+        #detector_performance: "good",
+        #detector_location: "LNGS",
+        common_hypothesis: {"Kr85_rate_multiplier":1.,"SolarER_rate_multiplier":1.,"Xe136_rate_multiplier":1.,"Xe124_rate_multiplier":1.},
+        hypotheses: ["free", "zero", "true"],
+        output_filename: "toymc_discovery_v1.0_PMT_quantum_efficiency_{PMT_quantum_efficiency:.2f}_drift_field_{drift_field:.2f}_electron_livetime_{electron_livetime:.2f}_gas_field_{gas_field:.2f}_livetime_{livetime:.0f}_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+        n_mc: 500,
+        n_batch: 1,
+        #n_batch: 20,
+        compute_confidence_interval: False,
+        asymptotic_dof: 1,
+        toydata_mode: "generate",
+        toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+      }
+
       #slurm_configurations:
       #  template_path: null
       #  hours: 2.
@@ -175,6 +312,42 @@ computation_options:
       #  partition: null
       #  qos: regular
       #  constraint: cpu
+      #
+
+  discovery_varyrate:
+    to_zip: {}
+    to_vary: {
+      #livetime: [5,10,20,50,75,100,150,200,500,700,1000],
+      #livetime: [10,30,100,300,1000],
+      livetime: [10,300,600],
+      generate_values: [
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":3.},
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":0.3},
+          {"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":10.},
+          #{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":3.,"neutron_rate_multiplier":1.},
+          #{"Pb214_rate_multiplier":1., "Kr85_rate_multiplier":.3,"neutron_rate_multiplier":1.},
+          {"Pb214_rate_multiplier":3., "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
+          {"Pb214_rate_multiplier":.3, "Kr85_rate_multiplier":1.,"neutron_rate_multiplier":1.},
+      ],
+      #wimp_mass: [10,16,32,40,60,91,129,361,1000],
+      wimp_mass: [10,40,1000],
+      poi_expectation: [0,5,10,20,30,50],
+    }
+    in_common:
+      {
+          common_hypothesis: {"Kr85_rate_multiplier":1.,"SolarER_rate_multiplier":1.,"Xe136_rate_multiplier":1.,"Xe124_rate_multiplier":1.},
+        hypotheses: ["free", "zero", "true"],
+        output_filename: "toymc_discovery_v1.0__Pb214_{Pb214_rate_multiplier:.2f}_Kr85_{Kr85_rate_multiplier:.2f}_neutron_{neutron_rate_multiplier:.2f}_livetime_{livetime:.0f}_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+        n_mc: 500,
+        n_batch: 1,
+        #n_batch: 20,
+        compute_confidence_interval: False,
+        asymptotic_dof: 1,
+        toydata_mode: "generate",
+        toydata_filename: "toyfile_wimp_mass_{wimp_mass:d}_poi_expectation_{poi_expectation:.2f}.ii.h5",
+      }
+
 slurm_configurations:
   template_path: null
   hours: 4.
