@@ -102,8 +102,8 @@ wimp_analysis_parameters:
     definition: Lower and upper range of cS1 range in photoelectrons (XENON scale of S1)
   cs2_range:
     value:
-      - 3.4
-      - 4.5
+      - 3.
+      - 4.
     unit: log10(cS2[phe])
     definition: log_10 of lower and upper range of cS2 range in photoelectrons (XENON scale of S1)
   recoE_range:
